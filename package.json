@@ -1,7 +1,7 @@
 {
-    "name": "node-red-contrib-process-data-simulator",
+    "name": "node-red-contrib-process-data-generator",
     "version": "0.0.1",
-    "description": "Process data simulator",
+    "description": "Process data generator",
     "author": {
         "name": "MSI"
     },
