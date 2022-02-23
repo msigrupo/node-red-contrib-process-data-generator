@@ -25,6 +25,11 @@ module.exports = function(RED) {
 			browseName: config.browseName
 		}
 
+		// signals.event.on('new', (signal, value) => {
+		// 	configOptions.signals = Object.keys(signals.valSignals);
+		// 	RestartSever();
+		// });
+
 		var servStatus = STOPPED;
 		NodeStatus();
 
@@ -32,7 +37,7 @@ module.exports = function(RED) {
 			if (msg.port != undefined) configOptions.port = Number.parseInt(msg.port);
 			if (msg.resourcePath != undefined) configOptions.resourcePath = msg.resourcePath;
 			if (msg.browseName != undefined) configOptions.browseName = msg.browseName;
-			if (msg.payload != undefined) configOptions.signals = Object.assign((configOptions.signals != undefined) ? configOptions.signals : {}, msg.payload);
+			// if (msg.signals != undefined) configOptions.signals = Object.assign((configOptions.signals != undefined) ? configOptions.signals : {}, msg.signals);
 
 			RestartSever();
 		});
@@ -118,6 +123,11 @@ module.exports = function(RED) {
 				
 				servStatus = RUNNING;
 				NodeStatus();
+
+				signals.event.on('new', (signal, value) => {
+					configOptions.signals = Object.keys(signals.valSignals);
+					RestartSever();
+				});
 			}
 			catch (err) {
 				console.log("Error: " + err);
