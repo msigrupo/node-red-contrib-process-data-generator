@@ -19,6 +19,8 @@ module.exports = function(RED) {
 		const STARTING = 2;
 		const RESTARTING = 3;
 
+		var restart = false;
+
 		var configOptions = {
 			port: Number.parseInt(config.port),
 			resourcePath: config.resourcePath,
@@ -33,6 +35,20 @@ module.exports = function(RED) {
 		var servStatus = STOPPED;
 		NodeStatus();
 
+		// Miro a ver si tengo que reiniciar el servidor por tener alguna senal nueva
+		setInterval(()=>{
+			if(restart) {
+				RestartSever();
+				restart=false;
+			}
+		},10000);
+
+		signals.event.on('new', (signal, value) => {
+			configOptions.signals = signals.valSignals;
+			restart=true;
+		});
+
+		/*
 		node.on('input', function(msg) {
 			if (msg.port != undefined) configOptions.port = Number.parseInt(msg.port);
 			if (msg.resourcePath != undefined) configOptions.resourcePath = msg.resourcePath;
@@ -41,6 +57,7 @@ module.exports = function(RED) {
 
 			RestartSever();
 		});
+		*/
 
 		node.on('close', function() {
 			CloseServer();
@@ -110,6 +127,7 @@ module.exports = function(RED) {
 		(async () => {
 			try {
 				servStatus = STARTING;
+				configOptions.signals = Object.keys(signals.valSignals);
 				NodeStatus();
 
 				await InitServer(); //Set parameters
@@ -123,11 +141,6 @@ module.exports = function(RED) {
 				
 				servStatus = RUNNING;
 				NodeStatus();
-
-				signals.event.on('new', (signal, value) => {
-					configOptions.signals = Object.keys(signals.valSignals);
-					RestartSever();
-				});
 			}
 			catch (err) {
 				console.log("Error: " + err);
@@ -136,6 +149,7 @@ module.exports = function(RED) {
 
 		async function RestartSever() {
 			console.log("Restart OPC UA Server");
+	
 			if (node.server) {
 				servStatus = RESTARTING;
 				NodeStatus();
