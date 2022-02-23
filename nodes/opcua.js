@@ -127,7 +127,7 @@ module.exports = function(RED) {
 		(async () => {
 			try {
 				servStatus = STARTING;
-				configOptions.signals = Object.keys(signals.valSignals);
+				configOptions.signals = signals.valSignals;
 				NodeStatus();
 
 				await InitServer(); //Set parameters
