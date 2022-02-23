@@ -1,0 +1,52 @@
+<script type="text/html" data-help-name="Random Signal">
+
+    <h3>Input</h3>
+		<dl class="message-properties">
+			<dt>payload
+				<span class="property-type">string | buffer</span>
+			</dt>
+			<dd> the payload of the message to publish. </dd>
+			<dt class="optional">options <span class="property-type">json</span></dt>
+			<dd> array object of <code>"value":"val", "typeValue": "val", "weight": "val", "typeWeight": "val"</code>
+                <ul>
+                    <li> <b>typeValue</b> : accepts this values: "str", "num", "bool", "msg", "flow", "global", "jsonata".</li>
+                    <li> <b>typeWeight</b> : accepts this values: "num", "msg", "flow", "global", "jsonata".</li>
+                </ul>
+                <pre style="font-size:smaller;">
+[
+    {
+        "value": "val1",
+        "typeValue": "str",
+        "weight": "1",
+        "typeWeight": "num"
+    },
+    {
+        "value": "val2",
+        "typeValue": "msg",
+        "weight": "flowVar",
+        "typeWeight": "flow"
+    }
+]
+                </pre>
+            </dd>
+			<dt class="optional">color <span class="property-type">string</span></dt>
+			<dd> color for status. Accepts "red", "green", "yellow", "blue", "grey"</dd>
+            <dt class="optional">output <span class="property-type">string</span></dt>
+			<dd> output of the command</dd>
+			<dt class="optional">outputType <span class="property-type">string</span></dt>
+			<dd> accepts "msg","flow","global"</dd>
+		</dl>
+		
+	<h3>Output</h3>
+		<ol class="node-ports">
+			<li>Standard output
+				<dl class="message-properties">
+					<dt>payload <span class="property-type">string</span></dt>
+					<dd>the standard output of the command.</dd>
+				</dl>
+			</li>
+		</ol>
+    
+    <h3>Details</h3>
+	<p>The status shows the generated random number</p>
+</script>

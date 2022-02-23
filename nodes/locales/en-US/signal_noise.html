@@ -1,0 +1,45 @@
+<script type="text/html" data-help-name="Signal Noise">
+
+    <h3>Input</h3>
+		<dl class="message-properties">
+			<dt>payload
+				<span class="property-type">string | buffer</span>
+			</dt>
+			<dd> the payload of the message to publish. </dd>
+			<dt class="optional">signals <span class="property-type">json</span></dt>
+			<dd> array object of <code>"signal":"val", "signalType": "val", "noise": "val", "decimals": "val"</code>
+				<ul>
+					<li> <b>signal</b> : signal name to get its value.</li>
+					<li> <b>signalType</b> : accepts this values: "msg", "flow", "global".</li>
+					<li> <b>noise</b> : noise percentage number to apply to the signal value.</li>
+					<li> <b>decimals</b> : number of decimals of the noise value.</li>
+				</ul>
+				<pre style="font-size:smaller;">
+[
+	{
+		"signal": "signal1",
+		"signalType": "msg",
+		"noise": 0.2,
+		"decimals": 3
+	},
+	{
+		"signal": "signal2",
+		"signalType": "flow",
+		"noise": 0.05,
+		"decimals": 2
+	}
+]
+				</pre>
+			</dd>
+		</dl>
+		
+	<h3>Output</h3>
+		<ol class="node-ports">
+			<li>Standard output
+				<dl class="message-properties">
+					<dt>payload <span class="property-type">string</span></dt>
+					<dd>the standard output of the command.</dd>
+				</dl>
+			</li>
+		</ol>
+</script>

@@ -1,0 +1,23 @@
+{
+    "process-simulator" : {
+		"name": "Name",
+		"date": {
+			"start": "Start date",
+			"end": "End date"
+		},
+		"limit": "Limit",
+		"iteration": "Iteration",
+		"interval": "Interval",
+		"runStart": "Run at startup",
+		"color": {
+			"status": "Status Color",
+			"red": "Red",
+			"green": "Green",
+			"yellow": "Yellow",
+			"blue": "Blue",
+			"grey": "Grey"
+		},
+		"dataType": "Data type"
+    },
+	"category": "Process data generator"
+}

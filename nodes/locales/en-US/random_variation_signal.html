@@ -1,0 +1,37 @@
+<script type="text/html" data-help-name="Random Variation Signal">
+
+    <h3>Input</h3>
+		<dl class="message-properties">
+			<dt>payload
+				<span class="property-type">string | buffer</span>
+			</dt>
+			<dd> the payload of the message to publish. </dd>
+			<dt class="optional">minValRandom <span class="property-type">number</span></dt>
+			<dd> minimum value of the random number to generate</dd>
+			<dt class="optional">maxValRandom <span class="property-type">number</span></dt>
+			<dd> maximum value of the random number to generate</dd>
+			<dt class="optional">minValSignal <span class="property-type">number</span></dt>
+			<dd> minimum value that the signal can have</dd>
+			<dt class="optional">maxValSignal <span class="property-type">number</span></dt>
+			<dd> maximum value that the signal can have</dd>
+			<dt class="optional">decimals <span class="property-type">number</span></dt>
+			<dd> number of decimal places that the random value and the signal can have</dd>
+			<dt class="optional">increase <span class="property-type">boolean</span></dt>
+			<dd> increment the previous value with the current one</dd>
+			<dt class="optional">decrease <span class="property-type">boolean</span></dt>
+			<dd> decrease the previous value with the current one</dd>
+			<dt class="optional">setValue <span class="property-type">number</span></dt>
+			<dd> reset the current value to the indicated value</dd>
+		</dl>
+		<b>NOTE:</b> if <code>increase</code> and <code>decrease</code> are true, a random will be done and one will be chosen randomly
+		
+	<h3>Output</h3>
+		<ol class="node-ports">
+			<li>Standard output
+				<dl class="message-properties">
+					<dt>payload <span class="property-type">string</span></dt>
+					<dd>the standard output of the command.</dd>
+				</dl>
+			</li>
+		</ol>
+</script>

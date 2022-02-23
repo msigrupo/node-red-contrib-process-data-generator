@@ -1,0 +1,51 @@
+<script type="text/html" data-help-name="Source List Signal">
+	<p>read data with pagination</p>
+
+    <h3>Input</h3>
+		<dl class="message-properties">
+			<dt>payload
+				<span class="property-type">string | buffer</span>
+			</dt>
+			<dd> the payload of the message to publish. </dd>
+			<dt class="optional">fileReading <span class="property-type">string</span></dt>
+			<dd> accepts "sequential", "random".
+				<ul>
+					<li> <b>sequential</b> : reading data sequentially.</li>
+                    <li> <b>random</b> : reading data randomly.</li>
+                </ul>
+			</dd>
+			<dt class="optional">inputData <span class="property-type">string</span></dt>
+			<dd> name of the parameter (msg.) in which the data will arrive</dd>
+			<dt class="optional">inputDataCount <span class="property-type">string</span></dt>
+			<dd> name of the parameter (msg.) in which the total number of data will arrive</dd>
+			<dt class="optional">pagination <span class="property-type">number</span></dt>
+			<dd> number of data you will receive. If <code>fileReading</code> is "random", automatically the <code>pagination</code>> is 1 </dd>
+		</dl>
+		
+	<h3>Output</h3>
+		<ol class="node-ports">
+			<li>Standard output
+				<dl class="message-properties">
+					<dt>payload <span class="property-type">string</span></dt>
+					<dd>the standard output of the command.</dd>
+				</dl>
+			</li>
+			<li>Request output
+				<dl class="message-properties">
+					<dt>payload <span class="property-type">string</span></dt>
+					<dd>to get data, sending "pagination", "index" and "values".</dd>
+				</dl>
+			</li>
+		</ol>
+	
+	<h3>Details</h3>
+	<p>the definition of the message that is sent by "Request output" has the following structure:
+		<pre style="font-size:smaller;">
+{
+	"pagination":number of elements,
+	"index":start of data,
+	"values":{data passed by inject}
+}
+		</pre>
+	</p>
+</script>

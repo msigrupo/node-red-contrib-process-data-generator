@@ -1,0 +1,167 @@
+<script type="text/javascript">
+    RED.nodes.registerType('Random Signal',{
+        category: RED._("node-red-contrib-process-data-simulator/random_signal:category"),
+        color: '#C7E9C0',
+        defaults: {
+			signal: {value:"", required: true},
+			options: {value:[{value: '', weight : ''}],
+                validate:function(v) {
+                    var unique = new Set(v.map(function(o) {return o.value;}));
+                    return v.length == unique.size;
+                }
+			},
+			color: {value:"grey"},
+            output: {value:this.output || (this.signal != undefined) ? "payload." + this.signal : "payload.", validate: (RED.validators.hasOwnProperty('typedInput')?RED.validators.typedInput('outputType'):function(v) { return true})},
+            outputType: {value: ""},
+        },
+        inputs:1,
+        outputs:1,
+        icon: "font-awesome/fa-line-chart",
+		peletteLabel: 'Random Signal',
+        label: function() {
+            return this.signal||"Random Signal";
+        },
+        labelStyle: function() {
+            return this.signal?"node_label_italic":"";
+        },
+		oneditprepare: function() {
+
+			var un = new Set(this.options.map(function(o) {return o.value}));
+            if (this.options.length == un.size) { $("#valWarning").hide(); }
+            else { $("#valWarning").show(); }
+
+			function generateOption(i, option) {
+                var container = $('<li/>',{style:"background: #fff; margin:0; padding:8px 0px 0px; border-bottom: 1px solid #ccc;"});
+                var row = $('<div/>').appendTo(container);
+                var row2 = $('<div/>',{style:"padding-top:5px; padding-left:175px;"}).appendTo(container);
+                var row3 = $('<div/>',{style:"padding-top:5px; padding-left:120px;"}).appendTo(container);
+
+                $('<i style="color:#eee; cursor:move; margin-left:3px;" class="node-input-option-handle fa fa-bars"></i>').appendTo(row);
+
+                var valueField = $('<input/>',{class:"node-input-option-value",type:"text",style:"margin-left:7px; width:calc(50% - 32px);", placeholder: 'Value',value:option.value}).appendTo(row).typedInput({default:option.typeValue||'num',types:['str','num','bool','msg','flow','global','jsonata']});
+                var weightField = $('<input/>',{class:"node-input-option-weight",type:"text",style:"margin-left:7px; width:calc(50% - 32px);", placeholder: 'Weight', value:option.weight||1}).appendTo(row).typedInput({default:option.typeWeight||'num',types:['num','msg','flow','global','jsonata']});
+
+                var finalspan = $('<span/>',{style:"float:right; margin-right:8px;"}).appendTo(row);
+                var deleteButton = $('<a/>',{href:"#",class:"editor-button editor-button-small", style:"margin-top:7px; margin-left:5px;"}).appendTo(finalspan);
+                $('<i/>',{class:"fa fa-remove"}).appendTo(deleteButton);
+
+                deleteButton.click(function() {
+                    container.css({"background":"#fee"});
+                    container.fadeOut(300, function() {
+                        $(this).remove();
+                    });
+                });
+
+                $("#node-input-option-container").append(container);
+            }
+
+			for (var i=0; i<this.options.length; i++) {
+                var option = this.options[i];
+                generateOption(i+1,option);
+            }
+
+			$("#node-input-add-option").click(function() {
+                generateOption($("#node-input-option-container").children().length+1, {});
+                $("#node-input-option-container-div").scrollTop($("#node-input-option-container-div").get(0).scrollHeight);
+            });
+
+			$( "#node-input-option-container" ).sortable({
+                axis: "y",
+                handle:".node-input-option-handle",
+                cursor: "move"
+            });
+
+            $("#node-input-output").typedInput({
+				default: 'msg',
+                types: ['msg','flow','global'],
+                typeField: $("#node-input-outputType")
+			});
+
+            var outputChange = true;
+            $("#node-input-signal").on("change", function() {
+                var payloadText = "payload.";
+                var signalText = payloadText + $("#node-input-signal").val();
+                var lastCharChange = ($("#node-input-signal").val().length > 0) ? $("#node-input-signal").val().substr($("#node-input-signal").val().length - 1) : "";
+                var outputText = $("#node-input-output").parent().find("input.red-ui-typedInput-input").val();
+
+                if ($("#node-input-outputType").val() === "msg" && outputChange === false) {
+                    $("#node-input-output").parent().find("input.red-ui-typedInput-input").val(signalText); //Value to show
+                    $("#node-input-output").val(signalText); //Value to save
+
+                    //If is not default text remove "input-error" class
+                    if (signalText != payloadText) $("#node-input-output").parent().find("div.red-ui-typedInput-container").removeClass("input-error");
+                    else $("#node-input-output").parent().find("div.red-ui-typedInput-container").addClass("input-error");
+                }
+            });
+
+            $("#node-input-output").on('change', function() {
+                var signalText = "payload." + $("#node-input-signal").val();
+                var outputText = $("#node-input-output").parent().find("input.red-ui-typedInput-input").val();
+
+                if ($("#node-input-outputType").val() === "msg" && (outputText === "payload." || outputText === "")) outputChange = false;
+                else if ($("#node-input-outputType").val() === "msg" && (outputText != signalText)) outputChange = true;
+                else outputChange = false;
+            } );
+		},
+		oneditsave: function() {
+            var options = $("#node-input-option-container").children();
+            var node = this;
+            node.options = [];
+            options.each(function(i) {
+                var option = $(this);
+                var o = {
+                    weight: option.find(".node-input-option-weight").val(),
+                    typeWeight: option.find(".node-input-option-weight").typedInput('type'),
+                    value: option.find(".node-input-option-value").typedInput('value'),
+                    typeValue: option.find(".node-input-option-value").typedInput('type')
+                };
+                if (option.find(".node-input-option-value").typedInput('type') === "num") {
+                    o.value = Number(o.value);
+                }
+                if (option.find(".node-input-option-value").typedInput('type') === "bool") {
+                    o.value = (o.value == "true");
+                }
+                node.options.push(o);
+            });
+        }
+    });
+</script>
+
+<script type="text/html" data-template-name="Random Signal">
+	<!--Signal Name-->
+	<div class="form-row">
+		<label for="node-input-signal"><i class="fa fa-signal"></i> <span data-i18n="random-signal.signal"></span></label>
+		<input type="text" id="node-input-signal">
+	</div>
+	
+	<!--Signal values-->
+	<div class="form-row node-input-option-container-row" style="margin-bottom: 0px;width: 100%">
+        <label for="node-input-width" style="vertical-align:top"><i class="fa fa-list-alt"></i> <span data-i18n="random-signal.options"></span></label>
+        <div id="node-input-option-container-div" style="box-sizing:border-box; border-radius:5px; height:257px; padding:5px; border:1px solid #ccc; overflow-y:scroll; display:inline-block; width:calc(70% + 15px);">
+            <span id="valWarning" style="color:#910000"><b>All Values must be unique.</b></span>
+            <ol id="node-input-option-container" style="list-style-type:none; margin:0;"></ol>
+        </div>
+    </div>
+    <div class="form-row">
+        <a href="#" class="editor-button editor-button-small" id="node-input-add-option" style="margin-top:4px; margin-left:103px;"><i class="fa fa-plus"></i> <span data-i18n="random-signal.option"></span></a>
+    </div>
+
+	<!--Color-->
+	<div class="form-row">
+		<label for="node-input-color"><i class="fa fa-code"></i> <span data-i18n="random-signal.color.status"></span></label>
+		<select id="node-input-color">
+			<option value="red">Red</option>
+			<option value="green">Green</option>
+			<option value="yellow">Yellow</option>
+			<option value="blue">Blue</option>
+			<option value="grey">Grey</option>
+		</select>
+	</div>
+
+    <!--Output-->
+	<div class="form-row">
+		<label for="node-input-output"><i class="fa fa-tag"></i> <span data-i18n="random-signal.output"></span></label>
+		<input type="text" id="node-input-output" value="">
+        <input type="hidden" id="node-input-outputType">
+	</div>
+</script>

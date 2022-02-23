@@ -1,0 +1,11 @@
+{
+    "signal-noise" : {
+        "name": "input name",
+        "signals": "Signals",
+        "signal": "signal",
+        "noise": "Noise",
+        "decimals": "Decimals",
+        "outputSignal": "Output signal"
+    },
+	"category": "Process data generator"
+}

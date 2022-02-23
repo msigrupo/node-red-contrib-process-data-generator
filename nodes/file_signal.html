@@ -1,0 +1,178 @@
+<script type="text/javascript">
+    RED.nodes.registerType('File Signal',{
+        category: RED._("node-red-contrib-process-data-simulator/file_signal:category"),
+        color: '#DEB887',
+        defaults: {
+            name: {value:""},
+            filename: {value:"", required:true},
+            encoding: {value:"utf8", required:true},
+            separator: {value:","},
+			otherSeparator: {value:""},
+			header: {value:false},
+			variables: {value:[{variable: '', column : ''}]},
+            fileReading: {value:"sequential", required:true},
+            output: {value:"payload", validate: (RED.validators.hasOwnProperty('typedInput')?RED.validators.typedInput('outputType'):function(v) { return true})},
+            outputType: {value: ""},
+        },
+        inputs:1,
+        outputs:1,
+        icon: "font-awesome/fa-file-text",
+		peletteLabel: 'File Signal',
+        label: function() {
+            return this.name||"File Signal";
+        },
+        labelStyle: function() {
+            return this.name?"node_label_italic":"";
+        },
+		oneditprepare: function() {
+
+			//Show or hide other separator depending if is selected
+			$('#node-input-separator').on("change", function() {
+                if ($('#node-input-separator').val() === "other") {
+					 $("#node-input-otherSeparator").show();
+                }
+                else {
+                    $("#node-input-otherSeparator").hide();
+                }
+            });
+
+			function generateVarRow(i, variable) {
+                var container = $('<li/>',{style:"background: #fff; margin:0; padding:8px 0px 0px; border-bottom: 1px solid #ccc;"});
+                var row = $('<div/>').appendTo(container);
+                var row2 = $('<div/>',{style:"padding-top:5px; padding-left:175px;"}).appendTo(container);
+                var row3 = $('<div/>',{style:"padding-top:5px; padding-left:120px;"}).appendTo(container);
+
+                $('<i style="color:#eee; cursor:move; margin-left:3px;" class="node-input-varTable-handle fa fa-bars"></i>').appendTo(row);
+
+                var varField = $('<input/>',{class:"node-input-varTable-variable",type:"text",style:"margin-left:7px; width:calc(50% - 32px);", placeholder: RED._("node-red-contrib-process-data-simulator/file_signal:file-signal.signal"),value:variable.variable}).appendTo(row).typedInput({default:variable.varType||'str',types:['str','num','bool','msg','flow','global']});
+				var columnField = $('<input/>',{class:"node-input-varTable-column",type:"number",style:"margin-left:7px; width:calc(50% - 32px);", placeholder: RED._("node-red-contrib-process-data-simulator/file_signal:file-signal.column"), value:variable.column}).appendTo(row);
+
+                var finalspan = $('<span/>',{style:"float:right; margin-right:8px;"}).appendTo(row);
+                var deleteButton = $('<a/>',{href:"#",class:"editor-button editor-button-small", style:"margin-top:7px; margin-left:5px;"}).appendTo(finalspan);
+                $('<i/>',{class:"fa fa-remove"}).appendTo(deleteButton);
+
+                deleteButton.click(function() {
+                    container.css({"background":"#fee"});
+                    container.fadeOut(300, function() {
+                        $(this).remove();
+                    });
+                });
+
+                $("#node-input-varTable-container").append(container);
+            }
+
+			for (var i=0; i<this.variables.length; i++) {
+                var variable = this.variables[i];
+                generateVarRow(i+1,variable);
+            }
+
+			$("#node-input-add-variable").click(function() {
+                generateVarRow($("#node-input-varTable-container").children().length+1, {});
+                $("#node-input-varTable-container-div").scrollTop($("#node-input-varTable-container-div").get(0).scrollHeight);
+            });
+
+			$( "#node-input-varTable-container" ).sortable({
+                axis: "y",
+                handle:".node-input-varTable-handle",
+                cursor: "move"
+            });
+
+            $("#node-input-output").typedInput({
+				default: 'msg',
+                types: ['msg','flow','global'],
+                typeField: $("#node-input-outputType")
+			});
+		},
+		oneditsave: function() {
+			var vars = $("#node-input-varTable-container").children();
+            var node = this;
+            node.variables = [];
+            vars.each(function(i) {
+                var variable = $(this);
+                var o = {
+                    column: variable.find(".node-input-varTable-column").val(),
+                    variable: variable.find(".node-input-varTable-variable").typedInput('value'),
+                    varType: variable.find(".node-input-varTable-variable").typedInput('type')
+                };
+                if (variable.find(".node-input-varTable-variable").typedInput('type') === "num") {
+                    o.variable = Number(o.variable);
+                }
+                if (variable.find(".node-input-varTable-variable").typedInput('type') === "bool") {
+                    o.variable = (o.variable == "true");
+                }
+                node.variables.push(o);
+            });
+        }
+    });
+</script>
+
+<script type="text/html" data-template-name="File Signal">
+    <!--Name-->
+	<div class="form-row">
+		<label for="node-input-name"><i class="fa fa-tag"></i> <span data-i18n="file-signal.name"></span></label>
+		<input type="text" id="node-input-name">
+	</div>
+
+    <!--Filename-->
+	<div class="form-row">
+		<label for="node-input-filename"><i class="fa fa-file"></i> <span data-i18n="file-signal.filename"></span></label>
+		<input type="text" id="node-input-filename">
+	</div>
+
+     <!--Encoding-->
+	<div class="form-row">
+		<label for="node-input-encoding"><i class="fa fa-flag"></i> <span data-i18n="file-signal.encoding"></span></label>
+		<select id="node-input-encoding">
+			<option value="utf8">UTF 8</option>
+			<option value="ascii">ASCII</option>
+		</select>
+	</div>
+
+     <!--Separator-->
+	<div class="form-row">
+		<label for="node-input-separator"><i class="fa fa-tag"></i> <span data-i18n="file-signal.separator"></span></label>
+		<select id="node-input-separator">
+			<option value=",">comma</option>
+            <option value="\t">tab</option>
+            <option value=" ">space</option>
+			<option value=";">semicolon</option>
+			<option value=":">colon</option>
+			<option value="#">hasttag</option>
+			<option value="other">other...</option>
+        </select>
+		<input type="text" id="node-input-otherSeparator" style="width:7%">
+	</div>
+
+	<!--Header in file-->
+	<div class="form-row">
+        <label style="width:auto" for="node-input-header"><i class="fa fa-arrow-right"></i> <span data-i18n="file-signal.header"></label>
+        <input type="checkbox" id="node-input-header" style="display:inline-block; width:auto; vertical-align:top;">
+    </div>
+
+    <!--Signals-->
+	<div class="form-row node-input-varTable-container-row" style="margin-bottom: 0px;width: 100%">
+        <label for="node-input-width" style="vertical-align:top"><i class="fa fa-list-alt"></i> <span data-i18n="file-signal.signals"></span></label>
+        <div id="node-input-varTable-container-div" style="box-sizing:border-box; border-radius:5px; height:257px; padding:5px; border:1px solid #ccc; overflow-y:scroll; display:inline-block; width:calc(70% + 15px);">
+            <ol id="node-input-varTable-container" style="list-style-type:none; margin:0;"></ol>
+        </div>
+    </div>
+    <div class="form-row">
+        <a href="#" class="editor-button editor-button-small" id="node-input-add-variable" style="margin-top:4px; margin-left:103px;"><i class="fa fa-plus"></i> <span data-i18n="file-signal.signal"></span></a>
+    </div>
+
+    <!--File Reading-->
+	<div class="form-row">
+		<label for="node-input-fileReading"><i class="fa fa-tag"></i> <span data-i18n="file-signal.fileReading"></span></label>
+        <select id="node-input-fileReading">
+			<option value="sequential">Sequential</option>
+			<option value="random">Random</option>
+		</select>
+	</div>
+
+    <!--Output-->
+	<div class="form-row">
+		<label for="node-input-output"><i class="fa fa-tag"></i> <span data-i18n="file-signal.output"></span></label>
+		<input type="text" id="node-input-output">
+        <input type="hidden" id="node-input-outputType">
+	</div>
+</script>

@@ -1,0 +1,36 @@
+<script type="text/html" data-help-name="Math Calcs">
+
+    <h3>Input</h3>
+		<dl class="message-properties">
+			<dt>payload
+				<span class="property-type">string | buffer</span>
+			</dt>
+			<dd> the payload of the message to publish. </dd>
+			<dt class="optional">calcNum1 <span class="property-type">number</span></dt>
+			<dd> first number of the operation. </dd>
+			<dt class="optional">calcNum1Type <span class="property-type">string</span></dt>
+			<dd> accepts this values: "num", "msg", "flow", "global". </dd>
+			<dt class="optional">calcOpe <span class="property-type">string</span></dt>
+			<dd> operation character. </dd>
+			<dt class="optional">calcNum2 <span class="property-type">number</span></dt>
+			<dd> second number of the operation. </dd>
+			<dt class="optional">calcNum2Type <span class="property-type">string</span></dt>
+			<dd> accepts this values: "num", "msg", "flow", "global". </dd>
+			<dt class="optional">output <span class="property-type">string</span></dt>
+			<dd> output of the command</dd>
+			<dt class="optional">outputType <span class="property-type">string</span></dt>
+			<dd> accepts "msg","flow","global"</dd>
+			<dt class="optional">color <span class="property-type">string</span></dt>
+			<dd> color for status. Accepts "red", "green", "yellow", "blue", "grey"</dd>
+		</dl>
+		
+	<h3>Output</h3>
+		<ol class="node-ports">
+			<li>Standard output
+				<dl class="message-properties">
+					<dt>payload <span class="property-type">string</span></dt>
+					<dd>the standard output of the command.</dd>
+				</dl>
+			</li>
+		</ol>
+</script>

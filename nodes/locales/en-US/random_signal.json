@@ -1,0 +1,17 @@
+{
+    "random-signal" : {
+		"signal": "Signal",
+		"color": {
+			"status": "Status Color",
+			"red": "Red",
+			"green": "Green",
+			"yellow": "Yellow",
+			"blue": "Blue",
+			"grey": "Grey"
+		},
+		"options": "Options",
+		"option": "option",
+		"output": "Output"
+    },
+	"category": "Process data generator"
+}

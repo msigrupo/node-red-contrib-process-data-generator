@@ -1,0 +1,17 @@
+{
+    "math-calcs" : {
+        "name": "Name",
+        "signal": "Signal",
+        "calc": "Calculation",
+        "output": "Output",
+        "color": {
+			"status": "Status Color",
+			"red": "Red",
+			"green": "Green",
+			"yellow": "Yellow",
+			"blue": "Blue",
+			"grey": "Grey"
+		}
+    },
+	"category": "Process data generator"
+}

@@ -1,0 +1,13 @@
+{
+    "source-list-signal" : {
+        "name": "Name",
+        "fileReading": "File reading",
+        "input": {
+            "name": "Input",
+            "data": "Data",
+            "dataCount": "Data count"
+        },
+        "pagination": "Pagination"
+    },
+	"category": "Process data generator"
+}

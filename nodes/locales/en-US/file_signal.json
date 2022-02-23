@@ -1,0 +1,15 @@
+{
+    "file-signal" : {
+        "name": "Name",
+        "filename": "Filename",
+        "encoding": "Encoding",
+        "separator": "Separator",
+        "signals": "Signals",
+        "signal": "signal",
+        "fileReading": "File reading",
+        "column": "Column",
+        "header": "First line with headers",
+        "output": "Output"
+    },
+	"category": "Process data generator"
+}

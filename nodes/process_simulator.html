@@ -1,0 +1,161 @@
+<script type="text/javascript">
+    RED.nodes.registerType('Process Simulator',{
+        category: RED._("node-red-contrib-process-data-simulator/process_simulator:category"),
+        color: '#A6BBCF',
+        defaults: {
+			name: {value:""},
+			dataType: {value:"historical"},
+            startDate: {value:formatDate(new Date()), required: true},
+			limit: {value:"iteration", required: true},
+			iteration: {value:5, validate: function() {
+				if ($('#node-input-dataType').val() === "historical" && $('#node-input-limit').val() === "iteration" && $('#node-input-iteration').val() === "") return false;
+				else return true;
+			}},
+			endDate: {value:"", validate: function() {
+				if ($('#node-input-dataType').val() === "historical" && $('#node-input-limit').val() === "endDate" && $('#node-input-endDate').val() === "") return false;
+				else return true;
+			}},
+			interval: {value:10, validate: RED.validators.number()},
+			intervalUnit: {value:60000},
+			runAtStart: {value:true},
+			color: {value:"grey"}
+        },
+        inputs:1,
+        outputs:1,
+        icon: "font-awesome/fa-arrow-right",
+		peletteLabel: 'Process Simulator',
+        label: function() {
+            return this.name||"Process Simulator";
+        },
+        labelStyle: function() {
+            return this.name?"node_label_italic":"";
+        },
+		oneditprepare: function() {
+			//Show and hide inputs depending on the selection of limit
+			$('#node-input-limit').on("change", function() {
+                if ($('#node-input-dataType').val() === "historical" && $('#node-input-limit').val() === "iteration") {
+                    $(".form-row-limit-endDate").hide();
+					 $(".form-row-limit-iteration").show();
+                }
+                else if ($('#node-input-dataType').val() === "historical" && $('#node-input-limit').val() === "endDate") {
+                    $(".form-row-limit-iteration").hide();
+					$(".form-row-limit-endDate").show();
+                }
+            });
+
+			//Show and hide inputs depending on the selection of data type
+			$('#node-input-dataType').on("change", function() {
+                if ($('#node-input-dataType').val() === "historical") {
+					$(".form-row-startDate").show();
+					$(".form-row-limit").show();
+
+					if ($('#node-input-limit').val() === "iteration") {
+						$(".form-row-limit-endDate").hide();
+						$(".form-row-limit-iteration").show();
+					}
+					else {
+						$(".form-row-limit-iteration").hide();
+						$(".form-row-limit-endDate").show();
+					}
+                }
+                else {
+					$(".form-row-startDate").hide();
+					$(".form-row-limit").hide();
+					$(".form-row-limit-iteration").hide();
+					$(".form-row-limit-endDate").hide();
+                }
+            });
+		}
+    });
+
+	//Format date to "yyyy-MM-ddThh:mm"
+	function formatDate(date) {
+		var day = date.getDate();
+		var month = date.getMonth() + 1;
+		var year = date.getFullYear();
+		var hour = date.getHours();
+		var minutes = date.getMinutes();
+
+		if (month < 10) month = "0" + month;
+		if (day < 10) day = "0" + day;
+		if (hour < 10) hour = "0" + hour;
+		if (minutes < 10) minutes = "0" + minutes;
+
+		var formatedDate = year + "-" + month + "-" + day + "T" + hour + ":" + minutes;
+		return formatedDate;
+	}
+</script>
+
+<script type="text/html" data-template-name="Process Simulator">
+	<!--Name-->
+	<div class="form-row">
+		<label for="node-input-name"><i class="fa fa-tag"></i> <span data-i18n="process-simulator.name"></span></label>
+		<input type="text" id="node-input-name">
+	</div>
+
+	<div class="form-row">
+		<label for="node-input-dataType"><i class="fa fa-filter"></i> <span data-i18n="process-simulator.dataType"></span></label>
+		<select id="node-input-dataType" style="width:35%">
+            <option value="realtime">Realtime</option>
+            <option value="historical">Historical</option>
+        </select>
+	</div>
+	
+	<!--Start Date-->
+	<div class="form-row form-row-startDate">
+		<label for="node-input-startDate"><i class="fa fa-calendar"></i> <span data-i18n="process-simulator.date.start"></span></label>
+		<input type="datetime-local" id="node-input-startDate">
+	</div>
+	
+	<!--Limit-->
+	<div class="form-row form-row-limit">
+		<label for="node-input-limit"><i class="fa fa-filter"></i> <span data-i18n="process-simulator.limit"></span></label>
+		<select id="node-input-limit" style="width:35%">
+            <option value="iteration">By iteration</option>
+            <option value="endDate">By end date</option>
+        </select>
+	</div>
+	
+	<!--Iteration-->
+	<div class="form-row form-row-limit-iteration">
+		<label for="node-input-iteration"><i class="fa fa-tag"></i> <span data-i18n="process-simulator.iteration"></span></label>
+		<input type="number" id="node-input-iteration">
+	</div>
+	
+	<!--End Date-->
+	<div class="form-row form-row-limit-endDate">
+		<label for="node-input-endDate"><i class="fa fa-calendar"></i> <span data-i18n="process-simulator.date.end"></span></label>
+		<input type="datetime-local" id="node-input-endDate">
+	</div>
+	
+	<!--Interval-->
+	<div class="form-row">
+		<label for="node-input-interval"><i class="fa fa-tag"></i> <span data-i18n="process-simulator.interval"></span></label>
+		<input type="number" id="node-input-interval" style="width:35%">
+		<select id="node-input-intervalUnit" style="width:35%">
+			<option value="1">Milliseconds</option>
+            <option value="1000">Seconds</option>
+            <option value="60000">Minutes</option>
+			<option value="360000">Hours</option>
+        </select>
+	</div>
+	
+	<!--Run at startup-->
+	<div class="form-row">
+        <label style="width:auto" for="node-input-runAtStart"><i class="fa fa-arrow-right"></i> <span data-i18n="process-simulator.runStart"></label>
+        <input type="checkbox" id="node-input-runAtStart" style="display:inline-block; width:auto; vertical-align:top;">
+    </div>
+
+	<!--Color-->
+	<div class="form-row">
+		<label for="node-input-color"><i class="fa fa-code"></i> <span data-i18n="process-simulator.color.status"></span></label>
+		<select id="node-input-color">
+			<option value="red">Red</option>
+			<option value="green">Green</option>
+			<option value="yellow">Yellow</option>
+			<option value="blue">Blue</option>
+			<option value="grey">Grey</option>
+		</select>
+	</div>
+	
+</script>

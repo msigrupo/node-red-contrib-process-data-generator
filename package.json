@@ -1,0 +1,28 @@
+{
+    "name": "node-red-contrib-process-data-simulator",
+    "version": "0.0.1",
+    "description": "Process data simulator",
+    "author": {
+        "name": "MSI"
+    },
+    "license": "MIT",
+    "node-red": {
+        "version": ">=2.0.0",
+        "nodes": {
+            "process_simulator": "nodes/process_simulator.js",
+            "file_signal": "nodes/file_signal.js",
+            "source_list_signal": "nodes/source_list_signal.js",
+            "random_signal": "nodes/random_signal.js",
+            "random_variation_signal": "nodes/random_variation_signal.js",
+            "math_calcs": "nodes/math_calcs.js",
+            "signal_noise": "nodes/signal_noise.js",
+            "trigger_signal": "nodes/trigger_signal.js",
+            "opcua": "nodes/opcua.js"
+        }
+    },
+    "dependencies": {
+        "fast-csv": "^4.3.6",
+        "node-opcua": "^2.64.0",
+        "split2": "^4.1.0"
+    }
+}

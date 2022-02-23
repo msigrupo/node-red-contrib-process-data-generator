@@ -1,0 +1,153 @@
+<script type="text/javascript">
+    RED.nodes.registerType('Random Variation Signal',{
+        category: RED._("node-red-contrib-process-data-simulator/random_variation_signal:category"),
+        color: '#C7E9C0',
+        defaults: {
+            signal: {value:"", required: true},
+            minValRandom: {value:0},
+            maxValRandom: {value:1},
+            minValSignal: {value:""},
+            maxValSignal: {value:""},
+            decimals: {value:0},
+            increase: {value:true},
+            decrease: {value:false},
+        },
+        inputs:1,
+        outputs:1,
+        icon: "font-awesome/fa-random",
+		peletteLabel: 'Random Variation Signal',
+        label: function() {
+            return this.signal||"Random Variation Signal";
+        },
+        labelStyle: function() {
+            return this.signal?"node_label_italic":"";
+        },
+		oneditprepare: function() {
+            //Show or hide max signal if increase selected
+			$('#node-input-increase').on("change", function() {
+                if (this.checked) {
+                    $("#node-label-maxValSignal").show();
+                    $("#node-input-maxValSignal").show();
+                }
+                else {
+                    $("#node-label-maxValSignal").hide();
+                    $("#node-input-maxValSignal").hide();
+                }
+                setLabelRandomText();
+            });
+
+            //Show or hide max signal if increase selected
+            $('#node-input-decrease').on("change", function() {
+                if (this.checked) {
+                    $("#node-label-minValSignal").show();
+                    $("#node-input-minValSignal").show();
+                }
+                else {
+                    $("#node-label-minValSignal").hide();
+                    $("#node-input-minValSignal").hide();
+                }
+                setLabelRandomText();
+            });
+
+            //Change step value of input number to decimals number value
+            $('#node-input-decimals').on("change", function() {
+                var stepValue = "0";
+                var val = $('#node-input-decimals').val();
+                if (val > 0) {
+                    var decimals = String(1).padStart(val, '0');
+                    stepValue = stepValue + "." + decimals;
+                }
+                
+                $("#node-input-minValRandom").attr('step', stepValue);
+                $("#node-input-maxValRandom").attr('step', stepValue);
+                $("#node-input-minValSignal").attr('step', stepValue);
+                $("#node-input-maxValSignal").attr('step', stepValue);
+            });
+
+            function setLabelRandomText() {
+                var inc = $('#node-input-increase').is(":checked");
+                var dec = $('#node-input-decrease').is(":checked");
+
+                var attrMinLang = $(".variation_minValRandom").attr('data-i18n').split(":")[0];
+                var attrMaxLang = $(".variation_maxValRandom").attr('data-i18n').split(":")[0];
+                var newAttrMinLang = "";
+                var newAttrMaxLang = "";
+                var jsonLang = ":random-variation-signal.";
+                var maxJsonText = "";
+                var minJsonText = "";
+
+                if ((inc && dec) || (!inc && !dec)) {
+                    newAttrMinLang = attrMinLang + jsonLang + "minValRandom";
+                    newAttrMaxLang = attrMaxLang + jsonLang + "maxValRandom";
+
+                    minJsonText = RED._("node-red-contrib-process-data-simulator/random_variation_signal"+jsonLang+"minValRandom");
+                    maxJsonText = RED._("node-red-contrib-process-data-simulator/random_variation_signal"+jsonLang+"maxValRandom");
+                } else if (inc) {
+                    newAttrMinLang = attrMinLang + jsonLang + "minValRandomInc";
+                    newAttrMaxLang = attrMaxLang + jsonLang + "maxValRandomInc";
+
+                    minJsonText = RED._("node-red-contrib-process-data-simulator/random_variation_signal"+jsonLang+"minValRandomInc");
+                    maxJsonText = RED._("node-red-contrib-process-data-simulator/random_variation_signal"+jsonLang+"maxValRandomInc");
+                } else if (dec) {
+                    newAttrMinLang = attrMinLang + jsonLang + "minValRandomDec";
+                    newAttrMaxLang = attrMaxLang + jsonLang + "maxValRandomDec";
+
+                    minJsonText = RED._("node-red-contrib-process-data-simulator/random_variation_signal"+jsonLang+"minValRandomDec");
+                    maxJsonText = RED._("node-red-contrib-process-data-simulator/random_variation_signal"+jsonLang+"maxValRandomDec");
+                }
+
+                $(".variation_maxValRandom").attr('data-i18n', newAttrMaxLang);
+                $(".variation_maxValRandom").text(maxJsonText);
+                $(".variation_minValRandom").attr('data-i18n', newAttrMinLang);
+                $(".variation_minValRandom").text(minJsonText);
+            }
+		},
+		oneditsave: function() {
+        }
+    });
+</script>
+
+<script type="text/html" data-template-name="Random Variation Signal">
+    <!--Signal-->
+	<div class="form-row">
+		<label for="node-input-signal"><i class="fa fa-signal"></i> <span data-i18n="random-variation-signal.signal"></span></label>
+		<input type="text" id="node-input-signal">
+	</div>
+
+    <div class="form-row">
+        <label style="width:auto" for="node-label-values"><i class="fa fa-tag"></i> <span data-i18n="random-variation-signal.defValues"></span></label>
+    </div>
+
+    <!--Decimals-->
+	<div class="form-row">
+		<label for="node-input-decimals" style="padding-left: 25px;"> <span data-i18n="random-variation-signal.decimals"></span></label>
+		<input type="number" id="node-input-decimals">
+	</div>
+
+    <!--Random min/max values-->
+	<div class="form-row">
+		<label for="node-input-minValRandom" style="padding-left: 25px;"> <span class="variation_minValRandom" data-i18n="random-variation-signal.minValRandom"></span></label>
+		<input type="number" id="node-input-minValRandom" style="width:20%">
+
+        <label for="node-input-maxValRandom" style="padding-left: 25px;"> <span class="variation_maxValRandom" data-i18n="random-variation-signal.maxValRandom"></span></label>
+		<input type="number" id="node-input-maxValRandom" style="width:20%">
+	</div>
+
+    <!--Increase-->
+    <div class="form-row">
+        <label for="node-input-increase"><i class="fa fa-arrow-up"></i> <span data-i18n="random-variation-signal.increase"></label>
+        <input type="checkbox" id="node-input-increase" style="display:inline-block; width:auto;">
+
+        <label for="node-input-maxValSignal" id="node-label-maxValSignal" style="padding-left: 25px;"> <span data-i18n="random-variation-signal.maxValSignal"></span></label>
+		<input type="number" id="node-input-maxValSignal" style="width:20%">
+    </div>
+
+    <!--Decrease-->
+    <div class="form-row">
+        <label for="node-input-decrease"><i class="fa fa-arrow-down"></i> <span data-i18n="random-variation-signal.decrease"></label>
+        <input type="checkbox" id="node-input-decrease" style="display:inline-block; width:auto;">
+
+        <label for="node-input-minValSignal" id="node-label-minValSignal" style="padding-left: 25px;"> <span data-i18n="random-variation-signal.minValSignal"></span></label>
+		<input type="number" id="node-input-minValSignal" style="width:20%">
+    </div>
+</script>

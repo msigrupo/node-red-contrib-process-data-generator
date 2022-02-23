@@ -1,0 +1,105 @@
+<script type="text/javascript">
+    RED.nodes.registerType('Signal Noise',{
+        category: RED._("node-red-contrib-process-data-simulator/signal_noise:category"),
+        color: '#FDF0C2',
+        defaults: {
+            name: {value:""},
+            signals: {value:[{signal: '', noise: 0, decimals: 0, outputSignal: ''}]}
+        },
+        inputs:1,
+        outputs:1,
+        icon: "font-awesome/fa-bullhorn",
+		peletteLabel: 'Signal Noise',
+        label: function() {
+            return this.name||"Signal Noise";
+        },
+        labelStyle: function() {
+            return this.name?"node_label_italic":"";
+        },
+		oneditprepare: function() {
+            function generateTableRow(i, signal) {
+                var container = $('<li/>',{style:"background: #fff; margin:0; padding:8px 0px 0px; border-bottom: 1px solid #ccc;"});
+                var row = $('<div/>').appendTo(container);
+                var row2 = $('<div/>',{style:"padding-top:5px; padding-left:175px;"}).appendTo(container);
+                var row3 = $('<div/>',{style:"padding-top:5px; padding-left:120px;"}).appendTo(container);
+
+                $('<i style="color:#eee; cursor:move; margin-left:3px;" class="node-input-table-handle fa fa-bars"></i>').appendTo(row);
+
+                var signalField = $('<input/>',{class:"node-input-table-signal",type:"text",style:"margin-left:7px; width:calc(30% - 32px);", placeholder: RED._("node-red-contrib-process-data-simulator/signal_noise:signal-noise.name"),value:signal.signal}).appendTo(row).typedInput({default:signal.signalType||'msg',types:['msg','flow','global']});
+				var noiseField = $('<input/>',{class:"node-input-table-noise",type:"number",step:"0.01",style:"margin-left:7px; width:calc(20% - 32px);", placeholder: RED._("node-red-contrib-process-data-simulator/signal_noise:signal-noise.noise"), value:signal.noise}).appendTo(row);
+                var decimalField = $('<input/>',{class:"node-input-table-decimals",type:"number",style:"margin-left:7px; width:calc(20% - 32px);", placeholder: RED._("node-red-contrib-process-data-simulator/signal_noise:signal-noise.decimals"), value:signal.decimals}).appendTo(row);
+                var outputSignalField = $('<input/>',{class:"node-input-table-outputSignal",type:"text",style:"margin-left:7px; width:calc(30% - 32px);", placeholder: RED._("node-red-contrib-process-data-simulator/signal_noise:signal-noise.outputSignal"), value:signal.outputSignal}).appendTo(row);
+
+                var finalspan = $('<span/>',{style:"float:right; margin-right:8px;"}).appendTo(row);
+                var deleteButton = $('<a/>',{href:"#",class:"editor-button editor-button-small", style:"margin-top:7px; margin-left:5px;"}).appendTo(finalspan);
+                $('<i/>',{class:"fa fa-remove"}).appendTo(deleteButton);
+
+                deleteButton.click(function() {
+                    container.css({"background":"#fee"});
+                    container.fadeOut(300, function() {
+                        $(this).remove();
+                    });
+                });
+
+                $("#node-input-table-container").append(container);
+            }
+
+            for (var i=0; i<this.signals.length; i++) {
+                var signal = this.signals[i];
+                generateTableRow(i+1,signal);
+            }
+
+            $("#node-input-add-signal").click(function() {
+                generateTableRow($("#node-input-table-container").children().length+1, {});
+                $("#node-input-table-container-div").scrollTop($("#node-input-table-container-div").get(0).scrollHeight);
+            });
+
+			$( "#node-input-table-container" ).sortable({
+                axis: "y",
+                handle:".node-input-table-handle",
+                cursor: "move"
+            });
+		},
+		oneditsave: function() {
+            var vars = $("#node-input-table-container").children();
+            var node = this;
+            node.signals = [];
+            vars.each(function(i) {
+                var signal = $(this);
+                var o = {
+                    noise: signal.find(".node-input-table-noise").val(),
+                    decimals: signal.find(".node-input-table-decimals").val(),
+                    signal: signal.find(".node-input-table-signal").typedInput('value'),
+                    signalType: signal.find(".node-input-table-signal").typedInput('type'),
+                    outputSignal: signal.find(".node-input-table-outputSignal").val()
+                };
+                if (signal.find(".node-input-table-signal").typedInput('type') === "num") {
+                    o.signal = Number(o.signal);
+                }
+                if (signal.find(".node-input-table-signal").typedInput('type') === "bool") {
+                    o.signal = (o.signal == "true");
+                }
+                node.signals.push(o);
+            });
+        }
+    });
+</script>
+
+<script type="text/html" data-template-name="Signal Noise">
+    <!--Name-->
+	<div class="form-row">
+		<label for="node-input-name"><i class="fa fa-tag"></i> <span data-i18n="signal-noise.name"></span></label>
+		<input type="text" id="node-input-name">
+	</div>
+
+    <!--Signals noise-->
+	<div class="form-row node-input-table-container-row" style="margin-bottom: 0px;width: 100%">
+        <label for="node-input-width" style="vertical-align:top"><i class="fa fa-list-alt"></i> <span data-i18n="signal-noise.signals"></span></label>
+        <div id="node-input-table-container-div" style="box-sizing:border-box; border-radius:5px; height:257px; padding:5px; border:1px solid #ccc; overflow-y:scroll; display:inline-block; width:calc(70% + 15px);">
+            <ol id="node-input-table-container" style="list-style-type:none; margin:0;"></ol>
+        </div>
+    </div>
+    <div class="form-row">
+        <a href="#" class="editor-button editor-button-small" id="node-input-add-signal" style="margin-top:4px; margin-left:103px;"><i class="fa fa-plus"></i> <span data-i18n="signal-noise.signal"></span></a>
+    </div>
+</script>

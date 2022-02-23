@@ -1,0 +1,47 @@
+<script type="text/javascript">
+    RED.nodes.registerType('Trigger Signal',{
+        category: RED._("node-red-contrib-process-data-simulator/trigger_signal:category"),
+        color: '#C0DEED',
+        defaults: {
+            name: {value:""},
+			signal: {value:"", required: true},
+            color: {value:"grey"}
+        },
+        inputs:1,
+        outputs:1,
+        icon: "font-awesome/fa-bell",
+		peletteLabel: 'Trigger Signal',
+        label: function() {
+            return this.name||"Trigger Signal";
+        },
+        labelStyle: function() {
+            return this.name?"node_label_italic":"";
+        }
+    });
+</script>
+
+<script type="text/html" data-template-name="Trigger Signal">
+    <!--Name-->
+	<div class="form-row">
+		<label for="node-input-name"><i class="fa fa-tag"></i> <span data-i18n="trigger-signal.name"></span></label>
+		<input type="text" id="node-input-name">
+	</div>
+
+	<!--Signal Name-->
+	<div class="form-row">
+		<label for="node-input-signal"><i class="fa fa-signal"></i> <span data-i18n="trigger-signal.signal"></span></label>
+		<input type="text" id="node-input-signal">
+	</div>
+
+    <!--Color-->
+	<div class="form-row">
+		<label for="node-input-color"><i class="fa fa-code"></i> <span data-i18n="trigger-signal.color.status"></span></label>
+		<select id="node-input-color">
+			<option value="red">Red</option>
+			<option value="green">Green</option>
+			<option value="yellow">Yellow</option>
+			<option value="blue">Blue</option>
+			<option value="grey">Grey</option>
+		</select>
+	</div>
+</script>

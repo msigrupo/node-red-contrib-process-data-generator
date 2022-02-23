@@ -1,0 +1,9 @@
+{
+    "opc-ua" : {
+        "name": "Name",
+        "port": "Port",
+        "resourcePath": "Resource path",
+        "browseName": "Browse name"
+    },
+	"category": "Process data generator"
+}

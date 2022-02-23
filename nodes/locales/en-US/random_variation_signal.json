@@ -1,0 +1,18 @@
+{
+    "random-variation-signal" : {
+        "signal": "Signal",
+        "defValues": "Definition values",
+        "minValRandom": "Min Random",
+        "minValRandomInc": "Min increase random",
+        "minValRandomDec": "Min decrease random",
+        "maxValRandom": "Max Random",
+        "maxValRandomInc": "Max increase random",
+        "maxValRandomDec": "Max decrease random",
+        "minValSignal": "Signal min value",
+        "maxValSignal": "Signal max value",
+        "decimals": "Decimals",
+        "increase": "Increase",
+        "decrease": "Decrease"
+    },
+	"category": "Process data generator"
+}

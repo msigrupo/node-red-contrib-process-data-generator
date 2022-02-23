@@ -1,0 +1,61 @@
+<script type="text/html" data-help-name="File Signal">
+
+    <h3>Input</h3>
+		<dl class="message-properties">
+			<dt>payload
+				<span class="property-type">string | buffer</span>
+			</dt>
+			<dd> the payload of the message to publish. </dd>
+			<dt class="optional">filename <span class="property-type">string</span></dt>
+			<dd> file path from Node-Red execution path</dd>
+			<dt class="optional">encoding <span class="property-type">string</span></dt>
+			<dd> encoding of the file. Accepts values "utf8", "ascii"</dd>
+			<dt class="optional">separator <span class="property-type">string</span></dt>
+			<dd> file column separator character</dd>
+			<dt class="optional">header <span class="property-type">boolean</span></dt>
+			<dd> first line with headers</dd>
+			<dt class="optional">variables <span class="property-type">json</span></dt>
+			<dd>  array object of <code>"variable":"val", "varType": "val", "column": "val"</code>
+				<ul>
+					<li> <b>variable</b> : name of the signal.</li>
+                    <li> <b>varType</b> : accepts this values: "str","num","bool","msg","flow","global".</li>
+                    <li> <b>column</b> : file column number.</li>
+                </ul>
+				<pre style="font-size:smaller;">
+[
+    {
+        "variable": "varInj1",
+        "varType": "str",
+        "column": 0
+    },
+    {
+        "variable": "varInj2",
+        "varType": "flow",
+        "column": 1
+    }
+]
+				</pre>
+			</dd>
+			<dt class="optional">fileReading <span class="property-type">string</span></dt>
+			<dd> accepts "sequential", "random".
+				<ul>
+					<li> <b>sequential</b> : reading the file line by line.</li>
+                    <li> <b>random</b> : reading file random line.</li>
+                </ul>
+			</dd>
+			<dt class="optional">output <span class="property-type">string</span></dt>
+			<dd> output of the command</dd>
+			<dt class="optional">outputType <span class="property-type">string</span></dt>
+			<dd> accepts "msg","flow","global"</dd>
+		</dl>
+		
+	<h3>Output</h3>
+		<ol class="node-ports">
+			<li>Standard output
+				<dl class="message-properties">
+					<dt>payload <span class="property-type">string</span></dt>
+					<dd>the standard output of the command.</dd>
+				</dl>
+			</li>
+		</ol>
+</script>

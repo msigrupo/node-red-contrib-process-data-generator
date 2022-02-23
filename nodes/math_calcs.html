@@ -1,0 +1,90 @@
+<script type="text/javascript">
+    RED.nodes.registerType('Math Calcs',{
+        category: RED._("node-red-contrib-process-data-simulator/math_calcs:category"),
+        color: '#FDF0C2',
+        defaults: {
+            signal: {value:"", required: true},
+            calcNum1: {value: "",validate: (RED.validators.hasOwnProperty('typedInput')?RED.validators.typedInput('calcNum1Type'):function(v) { return true})},
+            calcNum1Type: { value: ""},
+            calcOpe: {value: "+"},
+            calcNum2: {value: "",validate: (RED.validators.hasOwnProperty('typedInput')?RED.validators.typedInput('calcNum2Type'):function(v) { return true})},
+            calcNum2Type: { value: ""},
+            output: {value:"", validate: (RED.validators.hasOwnProperty('typedInput')?RED.validators.typedInput('outputType'):function(v) { return true})},
+            outputType: {value: ""},
+            color: {value:"grey"}
+        },
+        inputs:1,
+        outputs:1,
+        icon: "font-awesome/fa-calculator",
+		peletteLabel: 'Math Calcs',
+        label: function() {
+            return this.signal||"Math Calcs";
+        },
+        labelStyle: function() {
+            return this.signal?"node_label_italic":"";
+        },
+		oneditprepare: function() {
+            $("#node-input-calcNum1").typedInput({
+				default: 'msg',
+                types: ['num','msg','flow','global'],
+                typeField: $("#node-input-calcNum1Type")
+			}),
+            $("#node-input-calcNum2").typedInput({
+				default: 'msg',
+                types: ['num','msg','flow','global'],
+                typeField: $("#node-input-calcNum2Type")
+			}),
+            $("#node-input-output").typedInput({
+				default: 'msg',
+                types: ['msg','flow','global'],
+                typeField: $("#node-input-outputType")
+			})
+		},
+		oneditsave: function() {
+        }
+    });
+</script>
+
+<script type="text/html" data-template-name="Math Calcs">
+    <!--Signal-->
+	<div class="form-row">
+		<label for="node-input-signal"><i class="fa fa-signal"></i> <span data-i18n="math-calcs.signal"></span></label>
+		<input type="text" id="node-input-signal">
+	</div>
+    
+    <!--Calc-->
+    <div class="form-row">
+		<label for="node-input-calc"><i class="fa fa-tag"></i> <span data-i18n="math-calcs.calc"></span></label>
+		<input type="text" id="node-input-calcNum1" style="width:30%">
+		<input type="hidden" id="node-input-calcNum1Type">
+
+        <select id="node-input-calcOpe" style="width:9%">
+			<option value="+">+</option>
+            <option value="-">-</option>
+            <option value="*">*</option>
+			<option value="/">/</option>
+        </select>
+
+        <input type="text" id="node-input-calcNum2" style="width:30%">
+		<input type="hidden" id="node-input-calcNum2Type">
+	</div>
+
+    <!--Output-->
+	<div class="form-row">
+		<label for="node-input-output"><i class="fa fa-tag"></i> <span data-i18n="math-calcs.output"></span></label>
+		<input type="text" id="node-input-output">
+        <input type="hidden" id="node-input-outputType">
+	</div>
+
+    <!--Color-->
+	<div class="form-row">
+		<label for="node-input-color"><i class="fa fa-code"></i> <span data-i18n="math-calcs.color.status"></span></label>
+		<select id="node-input-color">
+			<option value="red">Red</option>
+			<option value="green">Green</option>
+			<option value="yellow">Yellow</option>
+			<option value="blue">Blue</option>
+			<option value="grey">Grey</option>
+		</select>
+	</div>
+</script>

@@ -1,0 +1,44 @@
+<script type="text/html" data-help-name="Process Simulator">
+	
+	<h3>Input</h3>
+		<dl class="message-properties">
+			<dt>payload
+				<span class="property-type">string | buffer</span>
+			</dt>
+			<dd> the payload of the message to publish. </dd>
+			<dt class="optional">dataType <span class="property-type">string</span></dt>
+			<dd> accepts one of this two values: "realtime" or "historical"
+				<ul>
+					<li> <b>realtime</b> : runs at every defined interval. Parameters to define: <code>interval</code></li>
+					<li> <b>historical</b> : execute the entire sequence instantly. Parameters to define: <code>startDate, limit, endDate | iteration, interval</code></li>
+				</ul>
+			</dd>
+			<dt class="optional">startDate <span class="property-type">string | date</span></dt>
+			<dd> start date of the simulation in format "yyyy-MM-ddThh:mm"</dd>
+			<dt class="optional">limit <span class="property-type">string</span></dt>
+			<dd> accepts one of this two values: "iteration" or "endDate"
+				<ul>
+					<li> <b>iteration</b> : executes maximum the number of iterations defined from the <code>startDate</code>. Parameters to define: <code>iteration</code></li>
+					<li> <b>endDate</b> : execute as many iterations as there are between the defined <code>startDate</code> and <code>endDate</code>. Parameters to define: <code>endDate</code></li>
+				</ul>
+			</dd>
+			<dt class="optional">endDate <span class="property-type">string | date</span></dt>
+			<dd> end date of the simulation in format "yyyy-MM-ddThh:mm"</dd>
+			<dt class="optional">iteration <span class="property-type">number</span></dt>
+			<dd> number of iterations from the start date</dd>
+			<dt class="optional">interval <span class="property-type">number</span></dt>
+			<dd> time in milliseconds to add until end of iterations or end date</dd>
+			<dt class="optional">color <span class="property-type">string</span></dt>
+			<dd> color for status. Accepts "red", "green", "yellow", "blue", "grey"</dd>
+		</dl>
+		
+	<h3>Output</h3>
+		<ol class="node-ports">
+			<li>Standard output
+				<dl class="message-properties">
+					<dt>payload <span class="property-type">string</span></dt>
+					<dd>the standard output of the command.</dd>
+				</dl>
+			</li>
+		</ol>
+</script>

@@ -1,0 +1,89 @@
+<script type="text/javascript">
+    RED.nodes.registerType('Source List Signal',{
+        category: RED._("node-red-contrib-process-data-simulator/source_list_signal:category"),
+        color: '#DEB887',
+        defaults: {
+            name: {value:""},
+            fileReading: {value:"sequential"},
+            inputData: {value:"", validate: (RED.validators.hasOwnProperty('typedInput')?RED.validators.typedInput('inputDataType'):function(v) { return true})},
+            inputDataType: {value:""},
+            inputDataCount: {value:"", validate: (RED.validators.hasOwnProperty('typedInput')?RED.validators.typedInput('inputDataCountType'):function(v) { return true})},
+            inputDataCountType: {value:""},
+            pagination: {value: ""}
+        },
+        inputs:1,
+        outputs:2,
+        icon: "font-awesome/fa-table",
+		peletteLabel: 'Source List Signal',
+        label: function() {
+            return this.name||"Source List Signal";
+        },
+        labelStyle: function() {
+            return this.name?"node_label_italic":"";
+        },
+		oneditprepare: function() {
+            $("#node-input-inputData").typedInput({
+                default: 'msg',
+                types: ['msg'],
+                typeField: $("#node-input-inputDataType")
+			})
+
+            $("#node-input-inputDataCount").typedInput({
+                default: 'msg',
+                types: ['msg'],
+                typeField: $("#node-input-inputDataCountType")
+			})
+
+            //Show or hide other separator depending if is selected
+			$('#node-input-fileReading').on("change", function() {
+                if ($('#node-input-fileReading').val() === "sequential") {
+					 $(".form-row-pagination").show();
+                }
+                else {
+                    lastPaginationVal = $('#node-input-pagination').val();
+                    $(".form-row-pagination").hide();
+                }
+            });
+		},
+		oneditsave: function() {
+        }
+    });
+</script>
+
+<script type="text/html" data-template-name="Source List Signal">
+    <!--Name-->
+	<div class="form-row">
+		<label for="node-input-name"><i class="fa fa-tag"></i> <span data-i18n="source-list-signal.name"></span></label>
+		<input type="text" id="node-input-name">
+	</div>
+
+    <!--File Reading-->
+	<div class="form-row">
+		<label for="node-input-fileReading"><i class="fa fa-tag"></i> <span data-i18n="source-list-signal.fileReading"></span></label>
+        <select id="node-input-fileReading">
+			<option value="sequential">Sequential</option>
+			<option value="random">Random</option>
+		</select>
+	</div>
+
+    <!--Input data-->
+    <div class="form-row">
+		<label style="width:auto"><i class="fa fa-tag"></i> <span data-i18n="source-list-signal.input.name"></span></label>
+	</div>
+
+    <div class="form-row">
+		<label for="node-input-inputData" style="padding-left: 25px;"> <span data-i18n="source-list-signal.input.data"></span></label>
+		<input type="text" id="node-input-inputData" style="width:20%">
+		<input type="hidden" id="node-input-inputDataType">
+
+        <label for="node-input-inputDataCount" style="padding-left: 25px;"> <span data-i18n="source-list-signal.input.dataCount"></span></label>
+        <input type="text" id="node-input-inputDataCount" style="width:20%">
+		<input type="hidden" id="node-input-inputDataCountType">
+	</div>
+
+    <!--Pagination-->
+	<div class="form-row form-row-pagination">
+		<label for="node-input-pagination" style="padding-left: 25px;"> <span data-i18n="source-list-signal.pagination"></span></label>
+		<input type="number" id="node-input-pagination">
+	</div>
+</script>

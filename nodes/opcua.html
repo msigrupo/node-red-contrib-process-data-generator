@@ -1,0 +1,52 @@
+<script type="text/javascript">
+    RED.nodes.registerType('OPC UA',{
+        category: RED._("node-red-contrib-process-data-simulator/opcua:category"),
+        color: '#C0DEED',
+        defaults: {
+            name: {value:""},
+            port: {value:"", validate: RED.validators.number()},
+            resourcePath: {value:"", required: true},
+            browseName: {value:"", required: true}
+        },
+        inputs:1,
+        outputs:1,
+        icon: "font-awesome/fa-file-text",
+		peletteLabel: 'OPC UA',
+        label: function() {
+            return this.name||"OPC UA";
+        },
+        labelStyle: function() {
+            return this.name?"node_label_italic":"";
+        },
+		oneditprepare: function() {
+		},
+		oneditsave: function() {
+        }
+    });
+</script>
+
+<script type="text/html" data-template-name="OPC UA">
+    <!--Name-->
+	<div class="form-row">
+		<label for="node-input-name"><i class="fa fa-tag"></i> <span data-i18n="opc-ua.name"></span></label>
+		<input type="text" id="node-input-name">
+	</div>
+
+    <!--Port-->
+	<div class="form-row">
+		<label for="node-input-port"><i class="fa fa-tag"></i> <span data-i18n="opc-ua.port"></span></label>
+		<input type="number" id="node-input-port">
+	</div>
+
+    <!--Resource Path-->
+	<div class="form-row">
+		<label for="node-input-resourcePath"><i class="fa fa-tag"></i> <span data-i18n="opc-ua.resourcePath"></span></label>
+		<input type="text" id="node-input-resourcePath">
+	</div>
+
+    <!--Browse Name-->
+	<div class="form-row">
+		<label for="node-input-browseName"><i class="fa fa-tag"></i> <span data-i18n="opc-ua.browseName"></span></label>
+		<input type="text" id="node-input-browseName">
+	</div>
+</script>
