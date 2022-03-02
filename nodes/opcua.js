@@ -23,7 +23,7 @@ module.exports = function(RED) {
 
 		var configOptions = {
 			port: Number.parseInt(config.port),
-			resourcePath: config.resourcePath,
+			resourcePath: (config.resourcePath.substring(0, 1) == '/') ? config.resourcePath : "/" + config.resourcePath,
 			browseName: config.browseName
 		}
 
