@@ -14,22 +14,26 @@ module.exports = function(RED) {
 
 	function createNode(node, config) {
 
-		let headerRow = config.headerRow != "" && Number.parseFloat(config.headerRow) >= 0 ? Number.parseFloat(config.headerRow) : -1;
+		let firstLineData = config.firstLineData != "" && Number.parseFloat(config.firstLineData) >= 1 ? Number.parseFloat(config.firstLineData) : 0;
 		var configOptions = {
 			filename: config.filename,
 			encoding: config.encoding,
 			separator: config.separator === "other" ? config.otherSeparator : config.separator,
-			numRowHeader: headerRow, //Header in row
-			header: headerRow >=0 ? true : false, //Has header
+			firstLineData: firstLineData, //Data start at line
 			variables: config.variables,
 			fileReading: config.fileReading,
 			output: config.output,
             outputType: config.outputType,
 		}
 
+		let fileHasHeader = false; //Comprobar si es senales de cabecera para ver si hay cabecera
+		let startLine = configOptions.firstLineData - 1;
+		if (startLine <= 0) startLine = 0;
+
 		var fileReadConfig = {
 			readStarted: false, //A line has been read
-			lastRowReaded: configOptions.header === true ? configOptions.numRowHeader : 0, //If headers default value is row header. If fileReading is "sequential" add 1 until finish and reset to header row
+			fileWithHeader: fileHasHeader, //File has header
+			lastRowReaded: startLine, //If fileReading is "sequential" add 1 until finish and reset to start line
 			numRowsFile: 0, //Total rows with headers
 			numRowsSkip: 1, //1 because lines start at 0
 			fileExist: false
@@ -42,23 +46,21 @@ module.exports = function(RED) {
 			const fastcsv = require('fast-csv');
 
 			//Check if no lines have been read and the file has header, add 1 line to skip
-			if (fileReadConfig.readStarted === false && configOptions.header === true) fileReadConfig.numRowsSkip += 1;
+			if (fileReadConfig.readStarted === false && fileReadConfig.fileWithHeader === true) fileReadConfig.numRowsSkip += 1;
 
 			//If random get random line to read
 			if (configOptions.fileReading === "random") {
-				//Random between header row and total rows of file
-				fileReadConfig.lastRowReaded = Math.floor(GenerateRandomNumber(configOptions.numRowHeader, fileReadConfig.numRowsFile - 1));
-				if (fileReadConfig.lastRowReaded < configOptions.numRowHeader) fileReadConfig.lastRowReaded = configOptions.numRowHeader;
+				//Random between start line and total rows of file
+				fileReadConfig.lastRowReaded = Math.floor(GenerateRandomNumber(startLine, fileReadConfig.numRowsFile));
+				if (fileReadConfig.lastRowReaded < startLine) fileReadConfig.lastRowReaded = startLine;
 			}
-			//If fileReading is "sequential" add lastRowReaded until finish and reset to header row
+			//If fileReading is "sequential" add lastRowReaded until finish and reset to start line
 			else if (configOptions.fileReading === "sequential") {
 				if (fileReadConfig.readStarted === true) {
 					if (fileReadConfig.lastRowReaded < (fileReadConfig.numRowsFile - fileReadConfig.numRowsSkip))
 						fileReadConfig.lastRowReaded += 1;
 					else {
-						//Default value with header is row header, else 0
-						if (configOptions.header === true) fileReadConfig.lastRowReaded = configOptions.numRowHeader;
-						else fileReadConfig.lastRowReaded = 0;
+						fileReadConfig.lastRowReaded = startLine;
 					}
 				}
 			}
@@ -66,7 +68,7 @@ module.exports = function(RED) {
 			if (fileReadConfig.readStarted === false) fileReadConfig.readStarted = true;
 
 			fs.createReadStream(path.resolve(pathNodeRed, configOptions.filename))
-				.pipe(fastcsv.parse({ headers: configOptions.header, delimiter: configOptions.separator, maxRows: 1, skipRows: fileReadConfig.lastRowReaded, encoding: configOptions.encoding }))
+				.pipe(fastcsv.parse({ headers: fileReadConfig.fileWithHeader, delimiter: configOptions.separator, maxRows: 1, skipRows: fileReadConfig.lastRowReaded, encoding: configOptions.encoding }))
 				.on('error', error => console.error(error))
 				.on('data', row => {
 					for (let i = 0; i < configOptions.variables.length; i++) {
@@ -115,7 +117,7 @@ module.exports = function(RED) {
 
 					fileReadConfig.numRowsFile = lineCount;
 					//After count read line of file if it has headers it has to have more than one line
-					if ((configOptions.header === true && lineCount > 1) || (configOptions.header === false && lineCount > 0))
+					if ((fileReadConfig.fileWithHeader === true && lineCount > 1) || (fileReadConfig.fileWithHeader === false && lineCount > 0))
 						readFile(msg);
 				})
 		}
@@ -249,12 +251,11 @@ module.exports = function(RED) {
 			if (msg.filename != undefined) configOptions.filename = msg.filename;
 			if (msg.encoding != undefined) configOptions.encoding = msg.encoding;
 			if (msg.separator != undefined) configOptions.separator = msg.separator;
-			if (msg.headerRow != undefined) {
-				let headerRow;
-				if (isNaN(msg.headerRow)) headerRow = -1;
-				else headerRow = Number.parseFloat(msg.headerRow) >= 0 ? Number.parseFloat(msg.headerRow) : -1;
-				configOptions.numRowHeader = headerRow;
-				configOptions.header = headerRow >=0 ? true : false; //Has header
+			if (msg.firstLineData != undefined) {
+				let firstLineData;
+				if (isNaN(msg.firstLineData)) firstLineData = 0;
+				else firstLineData = Number.parseFloat(msg.firstLineData) >= 1 ? Number.parseFloat(msg.firstLineData) : 0;
+				configOptions.firstLineData = firstLineData;
 			}
 			if (msg.variables != undefined) configOptions.variables = msg.variables;
 			if (msg.fileReading != undefined) configOptions.fileReading = msg.fileReading;
@@ -266,8 +267,12 @@ module.exports = function(RED) {
 				if (fileReadConfig.fileExist === false) fileExist();
 
 				if (fileReadConfig.fileExist === true) {
-					//If headerRow and is first time configure lastRowReaded to don't take from node configuration
-					if (msg.headerRow != undefined)	fileReadConfig.lastRowReaded = configOptions.header === true ? configOptions.numRowHeader : 0;
+					//If firstLineData and it is first time, configure lastRowReaded to don't take from node configuration
+					if (msg.firstLineData != undefined) {
+						startLine = configOptions.firstLineData - 1;
+						if (startLine <= 0) startLine = 0;
+						fileReadConfig.lastRowReaded = configOptions.firstLineData - 1;
+					}
 					countFileLines(msg);
 				}
 			}

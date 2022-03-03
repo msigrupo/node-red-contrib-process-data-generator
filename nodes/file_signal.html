@@ -8,7 +8,7 @@
             encoding: {value:"utf8", required:true},
             separator: {value:","},
 			otherSeparator: {value:""},
-			headerRow: {value:0},
+			firstLineData: {value:1},
 			variables: {value:[{variable: '', column : ''}]},
             fileReading: {value:"sequential", required:true},
             output: {value:"payload", validate: (RED.validators.hasOwnProperty('typedInput')?RED.validators.typedInput('outputType'):function(v) { return true})},
@@ -145,8 +145,8 @@
 
 	<!--Header in file-->
 	<div class="form-row">
-        <label style="width:auto" for="node-input-headerRow"><i class="fa fa-arrow-right"></i> <span data-i18n="file-signal.headerRow"></label>
-        <input type="number" id="node-input-headerRow" style="display:inline-block; width:auto;">
+        <label style="width:auto" for="node-input-firstLineData"><i class="fa fa-arrow-right"></i> <span data-i18n="file-signal.firstLineData"></label>
+        <input type="number" id="node-input-firstLineData" style="display:inline-block; width:auto;">
     </div>
 
     <!--Signals-->
