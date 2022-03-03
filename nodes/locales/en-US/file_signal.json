@@ -8,7 +8,7 @@
         "signal": "signal",
         "fileReading": "File reading",
         "column": "Column",
-        "header": "First line with headers",
+        "headerRow": "Header in row",
         "output": "Output"
     },
 	"category": "Process data generator"

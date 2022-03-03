@@ -8,7 +8,7 @@
             encoding: {value:"utf8", required:true},
             separator: {value:","},
 			otherSeparator: {value:""},
-			header: {value:false},
+			headerRow: {value:0},
 			variables: {value:[{variable: '', column : ''}]},
             fileReading: {value:"sequential", required:true},
             output: {value:"payload", validate: (RED.validators.hasOwnProperty('typedInput')?RED.validators.typedInput('outputType'):function(v) { return true})},
@@ -145,8 +145,8 @@
 
 	<!--Header in file-->
 	<div class="form-row">
-        <label style="width:auto" for="node-input-header"><i class="fa fa-arrow-right"></i> <span data-i18n="file-signal.header"></label>
-        <input type="checkbox" id="node-input-header" style="display:inline-block; width:auto; vertical-align:top;">
+        <label style="width:auto" for="node-input-headerRow"><i class="fa fa-arrow-right"></i> <span data-i18n="file-signal.headerRow"></label>
+        <input type="number" id="node-input-headerRow" style="display:inline-block; width:auto;">
     </div>
 
     <!--Signals-->

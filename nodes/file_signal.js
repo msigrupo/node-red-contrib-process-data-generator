@@ -14,11 +14,13 @@ module.exports = function(RED) {
 
 	function createNode(node, config) {
 
+		let headerRow = config.headerRow != "" && Number.parseFloat(config.headerRow) >= 0 ? Number.parseFloat(config.headerRow) : -1;
 		var configOptions = {
 			filename: config.filename,
 			encoding: config.encoding,
 			separator: config.separator === "other" ? config.otherSeparator : config.separator,
-			header: config.header,
+			numRowHeader: headerRow, //Header in row
+			header: headerRow >=0 ? true : false, //Has header
 			variables: config.variables,
 			fileReading: config.fileReading,
 			output: config.output,
@@ -27,7 +29,7 @@ module.exports = function(RED) {
 
 		var fileReadConfig = {
 			readStarted: false, //A line has been read
-			lastRowReaded: 0, //If fileReading is "sequential" add 1 until finish and reset to 0
+			lastRowReaded: configOptions.header === true ? configOptions.numRowHeader : 0, //If headers default value is row header. If fileReading is "sequential" add 1 until finish and reset to header row
 			numRowsFile: 0, //Total rows with headers
 			numRowsSkip: 1, //1 because lines start at 0
 			fileExist: false
@@ -44,16 +46,20 @@ module.exports = function(RED) {
 
 			//If random get random line to read
 			if (configOptions.fileReading === "random") {
-				fileReadConfig.lastRowReaded = Math.floor(Math.random() * fileReadConfig.numRowsFile - 1);
-				if (fileReadConfig.lastRowReaded < 0) fileReadConfig.lastRowReaded = 0;
+				//Random between header row and total rows of file
+				fileReadConfig.lastRowReaded = Math.floor(GenerateRandomNumber(configOptions.numRowHeader, fileReadConfig.numRowsFile - 1));
+				if (fileReadConfig.lastRowReaded < configOptions.numRowHeader) fileReadConfig.lastRowReaded = configOptions.numRowHeader;
 			}
-			//If fileReading is "sequential" add lastRowReaded until finish and reset to 0
+			//If fileReading is "sequential" add lastRowReaded until finish and reset to header row
 			else if (configOptions.fileReading === "sequential") {
 				if (fileReadConfig.readStarted === true) {
 					if (fileReadConfig.lastRowReaded < (fileReadConfig.numRowsFile - fileReadConfig.numRowsSkip))
 						fileReadConfig.lastRowReaded += 1;
-					else
-						fileReadConfig.lastRowReaded = 0;
+					else {
+						//Default value with header is row header, else 0
+						if (configOptions.header === true) fileReadConfig.lastRowReaded = configOptions.numRowHeader;
+						else fileReadConfig.lastRowReaded = 0;
+					}
 				}
 			}
 
@@ -121,6 +127,11 @@ module.exports = function(RED) {
 			} else {
 				fileReadConfig.fileExist = false;
 			}
+		}
+
+		//Return random number between two numbers
+		function GenerateRandomNumber(min, max) {
+			return (Math.random() * (Number.parseFloat(max) - Number.parseFloat(min))) + Number.parseFloat(min);
 		}
 
 		function GetSignalName(signal, msg) {
@@ -238,7 +249,13 @@ module.exports = function(RED) {
 			if (msg.filename != undefined) configOptions.filename = msg.filename;
 			if (msg.encoding != undefined) configOptions.encoding = msg.encoding;
 			if (msg.separator != undefined) configOptions.separator = msg.separator;
-			if (msg.header != undefined) configOptions.header = msg.header;
+			if (msg.headerRow != undefined) {
+				let headerRow;
+				if (isNaN(msg.headerRow)) headerRow = -1;
+				else headerRow = Number.parseFloat(msg.headerRow) >= 0 ? Number.parseFloat(msg.headerRow) : -1;
+				configOptions.numRowHeader = headerRow;
+				configOptions.header = headerRow >=0 ? true : false; //Has header
+			}
 			if (msg.variables != undefined) configOptions.variables = msg.variables;
 			if (msg.fileReading != undefined) configOptions.fileReading = msg.fileReading;
 			if (msg.output != undefined) configOptions.output = msg.output;
@@ -248,7 +265,11 @@ module.exports = function(RED) {
 			if (fileReadConfig.readStarted === false) {
 				if (fileReadConfig.fileExist === false) fileExist();
 
-				if (fileReadConfig.fileExist === true) countFileLines(msg);
+				if (fileReadConfig.fileExist === true) {
+					//If headerRow and is first time configure lastRowReaded to don't take from node configuration
+					if (msg.headerRow != undefined)	fileReadConfig.lastRowReaded = configOptions.header === true ? configOptions.numRowHeader : 0;
+					countFileLines(msg);
+				}
 			}
 			else readFile(msg);
         });
