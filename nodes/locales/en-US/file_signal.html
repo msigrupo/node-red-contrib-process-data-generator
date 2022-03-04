@@ -14,6 +14,13 @@
 			<dd> file column separator character</dd>
 			<dt class="optional">firstLineData <span class="property-type">number</span></dt>
 			<dd> Data start line. Greater than or equal to 1, else default 1</dd>
+			<dt class="optional">typeSignal <span class="property-type">string</span></dt>
+			<dd> accepts "concrete", "header".
+				<ul>
+					<li> <b>concrete</b> : specific signals. You must fill in <span class="optional">variables</span></li>
+					<li> <b>header</b> : Reads the header of the file and the signals are created. You must fill in <span class="optional">headerRow</span> and <span class="optional">startColumn</span></li>
+				</ul>
+			</dd>
 			<dt class="optional">variables <span class="property-type">json</span></dt>
 			<dd>  array object of <code>"variable":"val", "varType": "val", "column": "val"</code>
 				<ul>
@@ -36,6 +43,10 @@
 ]
 				</pre>
 			</dd>
+			<dt class="optional">headerRow <span class="property-type">number</span></dt>
+			<dd> specifies which line the headers are on</dd>
+			<dt class="optional">startColumn <span class="property-type">number</span></dt>
+			<dd> specifies from which column to start reading data</dd>
 			<dt class="optional">fileReading <span class="property-type">string</span></dt>
 			<dd> accepts "sequential", "random".
 				<ul>

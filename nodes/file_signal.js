@@ -20,15 +20,29 @@ module.exports = function(RED) {
 			encoding: config.encoding,
 			separator: config.separator === "other" ? config.otherSeparator : config.separator,
 			firstLineData: firstLineData, //Data start at line
+			typeOfSignals: config.typeOfSignals,
 			variables: config.variables,
+			headerRow: Number.parseFloat(config.headerRow), //Config header row
+			startColumn: Number.parseFloat(config.startColumn), //Config column start
 			fileReading: config.fileReading,
 			output: config.output,
             outputType: config.outputType,
 		}
 
-		let fileHasHeader = false; //Comprobar si es senales de cabecera para ver si hay cabecera
+		let fileHasHeader = false;
+
 		let startLine = configOptions.firstLineData - 1;
 		if (startLine <= 0) startLine = 0;
+
+		let rHeader = 0;
+		let sColumn = 0;
+		if (configOptions.typeOfSignals === "header") {
+			rHeader = configOptions.headerRow - 1;
+			if (rHeader <=0) rHeader = 0;
+
+			sColumn = configOptions.startColumn - 1;
+			if (sColumn <= 0) sColumn = 0;
+		}
 
 		var fileReadConfig = {
 			readStarted: false, //A line has been read
@@ -36,13 +50,17 @@ module.exports = function(RED) {
 			lastRowReaded: startLine, //If fileReading is "sequential" add 1 until finish and reset to start line
 			numRowsFile: 0, //Total rows with headers
 			numRowsSkip: 1, //1 because lines start at 0
-			fileExist: false
+			fileExist: false,
+			headerRow: rHeader, //Header row line to read and save headers names
+			startColumn: sColumn //Starts column to take data
 		}
+
+		var fileHeaderLineNames = []; //If configOptions.typeOfSignals is header, save header line
 
 		var pathNodeRed = path.join(__dirname, "..", ".."); //Path where find filename
 		
-		//Read line of file
-		function readFile(msg) {
+		//Prepare line to read and check type of signal
+		function prepareAndCheckReadFile(msg) {
 			const fastcsv = require('fast-csv');
 
 			//Check if no lines have been read and the file has header, add 1 line to skip
@@ -67,37 +85,86 @@ module.exports = function(RED) {
 
 			if (fileReadConfig.readStarted === false) fileReadConfig.readStarted = true;
 
+			//If configOptions.typeOfSignals is header, save header line
+			if (configOptions.typeOfSignals === "header") readFileHeaderAndSave(fs, fastcsv, pathNodeRed, msg);
+			else readFileAndSend(fs, fastcsv, pathNodeRed, msg);
+		}
+
+		//Read line of file and save in array
+		function readFileHeaderAndSave(fs, fastcsv, pathNodeRed, msg) {
+				fs.createReadStream(path.resolve(pathNodeRed, configOptions.filename))
+					.pipe(fastcsv.parse({ headers: fileReadConfig.fileWithHeader, delimiter: configOptions.separator, maxRows: 1, skipRows: fileReadConfig.headerRow, encoding: configOptions.encoding }))
+					.on('error', error => console.error(error))
+					.on('data', row => {
+						fileHeaderLineNames = row;
+					})
+					.on('end', rowCount => {
+						readFileAndSend(fs, fastcsv, pathNodeRed, msg);
+					}
+				);
+		}
+
+		//Read line of file, write in signal and send msg
+		function readFileAndSend(fs, fastcsv, pathNodeRed, msg) {
 			fs.createReadStream(path.resolve(pathNodeRed, configOptions.filename))
 				.pipe(fastcsv.parse({ headers: fileReadConfig.fileWithHeader, delimiter: configOptions.separator, maxRows: 1, skipRows: fileReadConfig.lastRowReaded, encoding: configOptions.encoding }))
 				.on('error', error => console.error(error))
 				.on('data', row => {
-					for (let i = 0; i < configOptions.variables.length; i++) {
-						//Check if column exist to add value of column
-						if (configOptions.variables[i].column < Object.values(row).length) {
-							var signalName = GetSignalName(configOptions.variables[i], msg);
-							// console.log("..............");
-							// RecursiveOuputSplit(configOptions.variables[i], row, configOptions.output.split('.'), msg); //Probando recursivo
-							// RecursiveOuputSplit(signalName, configOptions.variables[i], row, configOptions.output.split('.'), undefined, msg, undefined, 0); //Probando recursivo
-							var splitOutput = configOptions.output.split('.');
-							if (splitOutput.length > 1) {
-								msg[splitOutput[0]] = Object.assign({}, msg[splitOutput[0]]);
-								msg[splitOutput[0]][splitOutput[1]] = Object.assign({}, msg[splitOutput[0]][splitOutput[1]]);
-								msg[splitOutput[0]][splitOutput[1]][signalName] = Object.values(row)[configOptions.variables[i].column];
-							} else {
-								msg[configOptions.output] = Object.assign({}, msg[configOptions.output]);
-								if (configOptions.output === "payload") msg[configOptions.output][signalName] = Object.values(row)[configOptions.variables[i].column];
-								else msg[configOptions.output][signalName] = Object.values(row)[configOptions.variables[i].column];
-							}
+					if (configOptions.typeOfSignals === "concrete") {
+						for (let i = 0; i < configOptions.variables.length; i++) {
+							//Check if column exist to add value of column
+							if (configOptions.variables[i].column < Object.values(row).length) {
+								var signalName = GetSignalName(configOptions.variables[i], msg);
+								// console.log("..............");
+								// RecursiveOuputSplit(configOptions.variables[i], row, configOptions.output.split('.'), msg); //Probando recursivo
+								// RecursiveOuputSplit(signalName, configOptions.variables[i], row, configOptions.output.split('.'), undefined, msg, undefined, 0); //Probando recursivo
 
-							signals.write(signalName, Object.values(row)[configOptions.variables[i].column]);
+								let value = Object.values(row)[configOptions.variables[i].column];
+								PrepareOutputMessage(msg, signalName, value);
+								WriteSignal(signalName, value);
+							}
+						}
+					} else {
+						let txtEmptyHeader = "FileSignal_";
+						for (let i = fileReadConfig.startColumn; i < row.length; i++) {
+							var signalName = fileHeaderLineNames[i];
+							signalName = replaceSpecialCharacters(signalName);
+							if (signalName === "") signalName = txtEmptyHeader + i;
+
+							let value = Object.values(row)[i];
+							PrepareOutputMessage(msg, signalName, value);
+							WriteSignal(signalName, value);
 						}
 					}
-
 					NodeSend(msg);
 				})
 				.on('end', rowCount => {
 				}
 			);
+		}
+
+		//Prepare output message
+		function PrepareOutputMessage(msg, signalName, value) {
+			var splitOutput = configOptions.output.split('.');
+			if (splitOutput.length > 1) {
+				msg[splitOutput[0]] = Object.assign({}, msg[splitOutput[0]]);
+				msg[splitOutput[0]][splitOutput[1]] = Object.assign({}, msg[splitOutput[0]][splitOutput[1]]);
+				msg[splitOutput[0]][splitOutput[1]][signalName] = value;
+			} else {
+				msg[configOptions.output] = Object.assign({}, msg[configOptions.output]);
+				if (configOptions.output === "payload") msg[configOptions.output][signalName] = value;
+				else msg[configOptions.output][signalName] = value;
+			}
+		}
+
+		//Write signal value
+		function WriteSignal(signalName, value) {
+			signals.write(signalName, value);
+		}
+
+		//Replace all characters except letters and numbers
+		function replaceSpecialCharacters(string) {
+			return string.replace(/[^a-zA-Z0-9]/g,'_');
 		}
 
 		//Count how many lines the file has
@@ -118,7 +185,7 @@ module.exports = function(RED) {
 					fileReadConfig.numRowsFile = lineCount;
 					//After count read line of file if it has headers it has to have more than one line
 					if ((fileReadConfig.fileWithHeader === true && lineCount > 1) || (fileReadConfig.fileWithHeader === false && lineCount > 0))
-						readFile(msg);
+						prepareAndCheckReadFile(msg);
 				})
 		}
 
@@ -257,6 +324,33 @@ module.exports = function(RED) {
 				else firstLineData = Number.parseFloat(msg.firstLineData) >= 1 ? Number.parseFloat(msg.firstLineData) : 0;
 				configOptions.firstLineData = firstLineData;
 			}
+			if (msg.typeSignal != undefined) {
+				configOptions.typeOfSignals = msg.typeSignal;
+
+				if (configOptions.typeOfSignals === "header") {
+					//Header row
+					let rHeader = 0;
+					if (msg.headerRow != undefined) {
+						if (isNaN(msg.headerRow)) configOptions.headerRow = 0;
+						else configOptions.headerRow = Number.parseFloat(msg.headerRow);
+
+						rHeader = configOptions.headerRow - 1;
+						if (rHeader <=0) rHeader = 0;
+						fileReadConfig.headerRow = rHeader;
+					}
+
+					//Start column
+					let sColumn = 0;
+					if (msg.startColumn != undefined) {
+						if (isNaN(msg.headerRow)) configOptions.startColumn = 0;
+						else configOptions.startColumn = Number.parseFloat(msg.startColumn);
+
+						sColumn = configOptions.startColumn - 1;
+						if (sColumn <= 0) sColumn = 0;
+						fileReadConfig.startColumn = sColumn;
+					}
+				}
+			}
 			if (msg.variables != undefined) configOptions.variables = msg.variables;
 			if (msg.fileReading != undefined) configOptions.fileReading = msg.fileReading;
 			if (msg.output != undefined) configOptions.output = msg.output;
@@ -276,7 +370,7 @@ module.exports = function(RED) {
 					countFileLines(msg);
 				}
 			}
-			else readFile(msg);
+			else prepareAndCheckReadFile(msg);
         });
 
 		node.on('close', function() {

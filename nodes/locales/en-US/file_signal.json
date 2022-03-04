@@ -9,7 +9,16 @@
         "fileReading": "File reading",
         "column": "Column",
         "firstLineData": "Data first line",
-        "output": "Output"
+        "output": "Output",
+        "typeOfSignals": {
+            "text": "Type of signal",
+            "concrete": "Concrete sign",
+            "header": {
+                "text": "Header sign",
+                "row": "Header row",
+                "startColumn": "Start column"
+            }
+        }
     },
 	"category": "Process data generator"
 }

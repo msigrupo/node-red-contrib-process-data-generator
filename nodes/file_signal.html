@@ -9,7 +9,16 @@
             separator: {value:","},
 			otherSeparator: {value:""},
 			firstLineData: {value:1},
+            typeOfSignals: {value:"concrete", required: true},
 			variables: {value:[{variable: '', column : ''}]},
+            headerRow: {value:1, validate: function() {
+                if ($('#node-input-typeOfSignals').val() === "header" && $('#node-input-headerRow').val() === "") return false;
+				else return true;
+            }},
+            startColumn: {value:1, validate: function() {
+                if ($('#node-input-typeOfSignals').val() === "header" && $('#node-input-startColumn').val() === "") return false;
+				else return true;
+            }},
             fileReading: {value:"sequential", required:true},
             output: {value:"payload", validate: (RED.validators.hasOwnProperty('typedInput')?RED.validators.typedInput('outputType'):function(v) { return true})},
             outputType: {value: ""},
@@ -36,6 +45,18 @@
                 }
             });
 
+            //Show and hide inputs depending on the selection of typeOfSignals
+			$('#node-input-typeOfSignals').on("change", function() {
+                if ($('#node-input-typeOfSignals').val() === "concrete") {
+                    $(".form-row-typeOfSignals-header").hide();
+					 $(".form-row-typeOfSignals-concrete").show();
+                }
+                else {
+                    $(".form-row-typeOfSignals-concrete").hide();
+					$(".form-row-typeOfSignals-header").show();
+                }
+            });
+
 			function generateVarRow(i, variable) {
                 var container = $('<li/>',{style:"background: #fff; margin:0; padding:8px 0px 0px; border-bottom: 1px solid #ccc;"});
                 var row = $('<div/>').appendTo(container);
@@ -44,8 +65,8 @@
 
                 $('<i style="color:#eee; cursor:move; margin-left:3px;" class="node-input-varTable-handle fa fa-bars"></i>').appendTo(row);
 
-                var varField = $('<input/>',{class:"node-input-varTable-variable",type:"text",style:"margin-left:7px; width:calc(50% - 32px);", placeholder: RED._("node-red-contrib-process-data-simulator/file_signal:file-signal.signal"),value:variable.variable}).appendTo(row).typedInput({default:variable.varType||'str',types:['str','num','bool','msg','flow','global']});
-				var columnField = $('<input/>',{class:"node-input-varTable-column",type:"number",style:"margin-left:7px; width:calc(50% - 32px);", placeholder: RED._("node-red-contrib-process-data-simulator/file_signal:file-signal.column"), value:variable.column}).appendTo(row);
+                var varField = $('<input/>',{class:"node-input-varTable-variable",type:"text",style:"margin-left:7px; width:calc(50% - 32px);", placeholder: RED._("node-red-contrib-process-data-generator/file_signal:file-signal.signal"),value:variable.variable}).appendTo(row).typedInput({default:variable.varType||'str',types:['str','num','bool','msg','flow','global']});
+				var columnField = $('<input/>',{class:"node-input-varTable-column",type:"number",style:"margin-left:7px; width:calc(50% - 32px);", placeholder: RED._("node-red-contrib-process-data-generator/file_signal:file-signal.column"), value:variable.column}).appendTo(row);
 
                 var finalspan = $('<span/>',{style:"float:right; margin-right:8px;"}).appendTo(row);
                 var deleteButton = $('<a/>',{href:"#",class:"editor-button editor-button-small", style:"margin-top:7px; margin-left:5px;"}).appendTo(finalspan);
@@ -143,21 +164,47 @@
 		<input type="text" id="node-input-otherSeparator" style="width:7%">
 	</div>
 
-	<!--Header in file-->
+	<!--Data start line-->
 	<div class="form-row">
         <label style="width:auto" for="node-input-firstLineData"><i class="fa fa-arrow-right"></i> <span data-i18n="file-signal.firstLineData"></label>
         <input type="number" id="node-input-firstLineData" style="display:inline-block; width:auto;">
     </div>
 
+    <!-- Type of signals -->
+    <div class="form-row form-row-typeOfSignals">
+		<label for="node-input-typeOfSignals"><i class="fa fa-filter"></i> <span data-i18n="file-signal.typeOfSignals.text"></span></label>
+		<select id="node-input-typeOfSignals" style="width:35%">
+            <option value="concrete">Concrete sign</option>
+            <option value="header">Header sign</option>
+        </select>
+	</div>
+
     <!--Signals-->
-	<div class="form-row node-input-varTable-container-row" style="margin-bottom: 0px;width: 100%">
-        <label for="node-input-width" style="vertical-align:top"><i class="fa fa-list-alt"></i> <span data-i18n="file-signal.signals"></span></label>
-        <div id="node-input-varTable-container-div" style="box-sizing:border-box; border-radius:5px; height:257px; padding:5px; border:1px solid #ccc; overflow-y:scroll; display:inline-block; width:calc(70% + 15px);">
-            <ol id="node-input-varTable-container" style="list-style-type:none; margin:0;"></ol>
+    <div class="form-row-typeOfSignals-concrete">
+        <div class="form-row node-input-varTable-container-row" style="margin-bottom: 0px;width: 100%">
+            <label for="node-input-width" style="vertical-align:top"><i class="fa fa-list-alt"></i> <span data-i18n="file-signal.signals"></span></label>
+            <div id="node-input-varTable-container-div" style="box-sizing:border-box; border-radius:5px; height:257px; padding:5px; border:1px solid #ccc; overflow-y:scroll; display:inline-block; width:calc(70% + 15px);">
+                <ol id="node-input-varTable-container" style="list-style-type:none; margin:0;"></ol>
+            </div>
+        </div>
+        <div class="form-row">
+            <a href="#" class="editor-button editor-button-small" id="node-input-add-variable" style="margin-top:4px; margin-left:103px;"><i class="fa fa-plus"></i> <span data-i18n="file-signal.signal"></span></a>
         </div>
     </div>
-    <div class="form-row">
-        <a href="#" class="editor-button editor-button-small" id="node-input-add-variable" style="margin-top:4px; margin-left:103px;"><i class="fa fa-plus"></i> <span data-i18n="file-signal.signal"></span></a>
+
+    <!-- Signals type header -->
+    <div class="form-row-typeOfSignals-header">
+        <!-- Header row -->
+        <div class="form-row">
+            <label for="node-input-headerRow"> <span data-i18n="file-signal.typeOfSignals.header.row"></label>
+            <input type="number" id="node-input-headerRow" style="width:35%">
+        </div>
+
+        <!-- Start column -->
+        <div class="form-row">
+            <label for="node-input-startColumn"> <span data-i18n="file-signal.typeOfSignals.header.startColumn"></label>
+            <input type="number" id="node-input-startColumn" style="width:35%">
+        </div>
     </div>
 
     <!--File Reading-->
