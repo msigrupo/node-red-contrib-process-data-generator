@@ -103,15 +103,13 @@ module.exports = function(RED) {
 
             switch (configOptions.outputType) {
                 case "msg":
-                    var splitOutput = configOptions.output.split('.');
-					if (splitOutput.length > 1) {
-						configOptions.input[splitOutput[0]] = Object.assign({}, configOptions.input[splitOutput[0]]);
-						configOptions.input[splitOutput[0]][splitOutput[1]] = result;
-					} else {
-                        configOptions.input[configOptions.output] = Object.assign({}, configOptions.input[configOptions.output]);
-                        if (configOptions.output === "payload") configOptions.input[configOptions.output][configOptions.signal] = result;
-                        else configOptions.input[configOptions.output] = result;
-					}
+                    let signalsWithValues = {};
+					signalsWithValues[configOptions.signal] = result;
+
+					var splitOutput = configOptions.output.split('.');
+					var splitFirstLevel = splitOutput.shift();
+					let strres = RecursiveOuputSplit(signalsWithValues, splitOutput, "");
+					configOptions.input[splitFirstLevel] = JSON.parse(strres);
 
                     node.send(configOptions.input);
                     break;
@@ -125,6 +123,30 @@ module.exports = function(RED) {
 
             node.status({fill:configOptions.color,shape:"dot",text:result});
         }
+
+        //Prepare output message
+		function RecursiveOuputSplit(signals, outputTxtSplit, txtRecursive) {
+			if (outputTxtSplit.length == 0) {
+				let indexSenal = 1;
+				Object.keys(signals).forEach(key => {
+					if (indexSenal < Object.keys(signals).length) {
+						txtRecursive = txtRecursive +'"'+key+'"'+': ' +'"'+signals[key]+'", ';
+					} else {
+						txtRecursive = txtRecursive +'"'+key+'"'+': ' +'"'+signals[key]+'"';
+					}
+					indexSenal += 1;
+				});
+				txtRecursive = '{' + txtRecursive + '}';
+				return txtRecursive;
+			}   
+			else {  
+				var eliminado = outputTxtSplit.shift();
+				txtRecursive = txtRecursive +'"'+eliminado+'"' + ': {';        
+				txtRecursive = RecursiveOuputSplit(signals, outputTxtSplit, txtRecursive);        
+				txtRecursive = txtRecursive + '}';
+				return txtRecursive;
+			}
+		}
 	}
 
     RED.nodes.registerType("Math Calcs", CreateNode);

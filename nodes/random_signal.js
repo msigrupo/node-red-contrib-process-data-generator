@@ -118,15 +118,14 @@ module.exports = function(RED) {
 		function NodeSend(value, msg) {
             switch (outputType) {
                 case "msg":
+					let signalsWithValues = {};
+					signalsWithValues[signal] = value;
+
 					var splitOutput = output.split('.');
-					if (splitOutput.length > 1) {
-						msg[splitOutput[0]] = Object.assign({}, msg[splitOutput[0]]);
-						msg[splitOutput[0]][splitOutput[1]] = value;
-					} else {
-						msg[output] = Object.assign({}, msg[output]);
-						if (output === "payload") msg[output][signal] = value;
-                        else msg[output] = value;
-					}
+					var splitFirstLevel = splitOutput.shift();
+					let strres = RecursiveOuputSplit(signalsWithValues, splitOutput, "");
+					msg[splitFirstLevel] = JSON.parse(strres);
+
 					node.send(msg);
                     break;
                 case "flow":
@@ -139,6 +138,30 @@ module.exports = function(RED) {
 
             node.status({fill:color,shape:"dot",text:value});
         }
+
+		//Prepare output message
+		function RecursiveOuputSplit(signals, outputTxtSplit, txtRecursive) {
+			if (outputTxtSplit.length == 0) {
+				let indexSenal = 1;
+				Object.keys(signals).forEach(key => {
+					if (indexSenal < Object.keys(signals).length) {
+						txtRecursive = txtRecursive +'"'+key+'"'+': ' +'"'+signals[key]+'", ';
+					} else {
+						txtRecursive = txtRecursive +'"'+key+'"'+': ' +'"'+signals[key]+'"';
+					}
+					indexSenal += 1;
+				});
+				txtRecursive = '{' + txtRecursive + '}';
+				return txtRecursive;
+			}   
+			else {  
+				var eliminado = outputTxtSplit.shift();
+				txtRecursive = txtRecursive +'"'+eliminado+'"' + ': {';        
+				txtRecursive = RecursiveOuputSplit(signals, outputTxtSplit, txtRecursive);        
+				txtRecursive = txtRecursive + '}';
+				return txtRecursive;
+			}
+		}
 
         node.on('input', function(msg) {
 			var possibleColors = ["red","green","yellow","blue","grey"];

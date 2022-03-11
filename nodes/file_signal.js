@@ -110,18 +110,17 @@ module.exports = function(RED) {
 				.pipe(fastcsv.parse({ headers: fileReadConfig.fileWithHeader, delimiter: configOptions.separator, maxRows: 1, skipRows: fileReadConfig.lastRowReaded, encoding: configOptions.encoding }))
 				.on('error', error => console.error(error))
 				.on('data', row => {
+					let signalsWithValues = {};
 					if (configOptions.typeOfSignals === "concrete") {
 						for (let i = 0; i < configOptions.variables.length; i++) {
 							//Check if column exist to add value of column
 							if (configOptions.variables[i].column < Object.values(row).length) {
 								var signalName = GetSignalName(configOptions.variables[i], msg);
-								// console.log("..............");
-								// RecursiveOuputSplit(configOptions.variables[i], row, configOptions.output.split('.'), msg); //Probando recursivo
-								// RecursiveOuputSplit(signalName, configOptions.variables[i], row, configOptions.output.split('.'), undefined, msg, undefined, 0); //Probando recursivo
 
 								let value = Object.values(row)[configOptions.variables[i].column];
-								PrepareOutputMessage(msg, signalName, value);
 								WriteSignal(signalName, value);
+
+								signalsWithValues[signalName] = value;
 							}
 						}
 					} else {
@@ -130,31 +129,25 @@ module.exports = function(RED) {
 							var signalName = fileHeaderLineNames[i];
 							signalName = replaceSpecialCharacters(signalName);
 							if (signalName === "") signalName = txtEmptyHeader + i;
-
+							
 							let value = Object.values(row)[i];
-							PrepareOutputMessage(msg, signalName, value);
 							WriteSignal(signalName, value);
+
+							//Save signal and value and then do recursive with all signals
+							signalsWithValues[signalName] = value;
+							
 						}
 					}
+					var splitOutput = configOptions.output.split('.');
+					var splitFirstLevel = splitOutput.shift();
+					let strres = RecursiveOuputSplit(signalsWithValues, splitOutput, "");
+					msg[splitFirstLevel] = JSON.parse(strres);
+
 					NodeSend(msg);
 				})
 				.on('end', rowCount => {
 				}
 			);
-		}
-
-		//Prepare output message
-		function PrepareOutputMessage(msg, signalName, value) {
-			var splitOutput = configOptions.output.split('.');
-			if (splitOutput.length > 1) {
-				msg[splitOutput[0]] = Object.assign({}, msg[splitOutput[0]]);
-				msg[splitOutput[0]][splitOutput[1]] = Object.assign({}, msg[splitOutput[0]][splitOutput[1]]);
-				msg[splitOutput[0]][splitOutput[1]][signalName] = value;
-			} else {
-				msg[configOptions.output] = Object.assign({}, msg[configOptions.output]);
-				if (configOptions.output === "payload") msg[configOptions.output][signalName] = value;
-				else msg[configOptions.output][signalName] = value;
-			}
 		}
 
 		//Write signal value
@@ -224,74 +217,28 @@ module.exports = function(RED) {
 			return typeValue;
 		}
 
-		function RecursiveOuputSplit_(signal, row, outputTxtSplit, msg) {
-			console.log("****");
-			console.log(outputTxtSplit);
-			// var splitOutput = configOptions.output.split('.');
-			// if (splitOutput.length > 1) {
-			// 	msg[splitOutput[0]] = Object.assign({}, msg[splitOutput[0]]);
-			// 	msg[splitOutput[0]][splitOutput[1]] = Object.assign({}, msg[splitOutput[0]][splitOutput[1]]);
-			// 	msg[splitOutput[0]][splitOutput[1]][signalName] = Object.values(row)[configOptions.variables[i].column];
-			// } else {
-			// 	msg[configOptions.output] = Object.assign({}, msg[configOptions.output]);
-			// 	if (configOptions.output === "payload") msg[configOptions.output][signalName] = Object.values(row)[configOptions.variables[i].column];
-			// 	else msg[configOptions.output][signalName] = Object.values(row)[configOptions.variables[i].column];
-			// }
-			
-			// msg[outputTxtSplit[0]] = Object.assign({}, msg[outputTxtSplit[0]]);
-			if (outputTxtSplit != undefined && outputTxtSplit.length >= 1) {
-				console.log(">1");
-				msg[outputTxtSplit[0]] = Object.assign({}, msg[outputTxtSplit[0]]);
-
-				var rest = outputTxtSplit.shift();
-				console.log(outputTxtSplit.length);
-
-				RecursiveOuputSplit(signal, row, outputTxtSplit);
-			} else {
-				console.log("<=1");
-				SetOutputValue();
+		//Prepare output message
+		function RecursiveOuputSplit(signals, outputTxtSplit, txtRecursive) {
+			if (outputTxtSplit.length == 0) {
+				let indexSenal = 1;
+				Object.keys(signals).forEach(key => {
+					if (indexSenal < Object.keys(signals).length) {
+						txtRecursive = txtRecursive +'"'+key+'"'+': ' +'"'+signals[key]+'", ';
+					} else {
+						txtRecursive = txtRecursive +'"'+key+'"'+': ' +'"'+signals[key]+'"';
+					}
+					indexSenal += 1;
+				});
+				txtRecursive = '{' + txtRecursive + '}';
+				return txtRecursive;
+			}   
+			else {  
+				var eliminado = outputTxtSplit.shift();
+				txtRecursive = txtRecursive +'"'+eliminado+'"' + ': {';        
+				txtRecursive = RecursiveOuputSplit(signals, outputTxtSplit, txtRecursive);        
+				txtRecursive = txtRecursive + '}';
+				return txtRecursive;
 			}
-		}
-
-		function RecursiveOuputSplit(signalName, signal, rowData, originalSplit, outputTxtSplit, msg, txtRecursive, currentLevel) {
-			console.log("****");
-			if (outputTxtSplit === undefined) outputTxtSplit = JSON.parse(JSON.stringify(originalSplit));
-			console.log(outputTxtSplit);
-			
-			if (outputTxtSplit != undefined && outputTxtSplit.length >= 1) {
-				msg[outputTxtSplit[0]] = Object.assign({}, msg[outputTxtSplit[0]]);
-
-				var rest = outputTxtSplit.shift();
-				console.log(outputTxtSplit.length);
-
-				if (txtRecursive === undefined) {
-					txtRecursive = "msg[originalSplit[0]]";
-
-					console.log(txtRecursive);
-					eval(txtRecursive) = Object.assign({}, eval(txtRecursive));
-				}
-
-				if(outputTxtSplit.length > 0) {
-					currentLevel += 1;
-					txtRecursive = txtRecursive + "[originalSplit[" + currentLevel + "]]";
-				} else {
-					txtRecursive = txtRecursive + "[signalName]";
-				}
-
-				console.log(txtRecursive);
-				eval(txtRecursive) = Object.assign({}, eval(txtRecursive));
-				
-				RecursiveOuputSplit(signalName, signal, rowData, originalSplit, outputTxtSplit, msg, txtRecursive, currentLevel);
-			} else {
-				SetOutputValue(signal, rowData, msg, txtRecursive, originalSplit);
-			}
-		}
-
-		function SetOutputValue(signal, rowData, msg, txtRecursive, originalSplit) {
-			console.log("set");
-			// console.log(msg);
-			console.log(txtRecursive);
-			console.log(originalSplit);
 		}
 
 		function NodeSend(msg) {
