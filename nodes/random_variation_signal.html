@@ -3,6 +3,7 @@
         category: RED._("node-red-contrib-process-data-generator/random_variation_signal:category"),
         color: '#C7E9C0',
         defaults: {
+            name: {value:""},
             signal: {value:"", required: true},
             minValRandom: {value:0},
             maxValRandom: {value:1},
@@ -17,10 +18,10 @@
         icon: "font-awesome/fa-random",
 		peletteLabel: 'Random Variation Signal',
         label: function() {
-            return this.signal||"Random Variation Signal";
+            return this.name||"Random Variation Signal";
         },
         labelStyle: function() {
-            return this.signal?"node_label_italic":"";
+            return this.name?"node_label_italic":"";
         },
 		oneditprepare: function() {
             //Show or hide max signal if increase selected
@@ -108,6 +109,12 @@
 </script>
 
 <script type="text/html" data-template-name="Random Variation Signal">
+    <!--Name-->
+	<div class="form-row">
+		<label for="node-input-name"><i class="fa fa-tag"></i> <span data-i18n="random-variation-signal.name"></span></label>
+		<input type="text" id="node-input-name">
+	</div>
+
     <!--Signal-->
 	<div class="form-row">
 		<label for="node-input-signal"><i class="fa fa-signal"></i> <span data-i18n="random-variation-signal.signal"></span></label>

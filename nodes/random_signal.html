@@ -3,6 +3,7 @@
         category: RED._("node-red-contrib-process-data-generator/random_signal:category"),
         color: '#C7E9C0',
         defaults: {
+            name: {value:""},
 			signal: {value:"", required: true},
 			options: {value:[{value: '', weight : ''}],
                 validate:function(v) {
@@ -19,10 +20,10 @@
         icon: "font-awesome/fa-line-chart",
 		peletteLabel: 'Random Signal',
         label: function() {
-            return this.signal||"Random Signal";
+            return this.name||"Random Signal";
         },
         labelStyle: function() {
-            return this.signal?"node_label_italic":"";
+            return this.name?"node_label_italic":"";
         },
 		oneditprepare: function() {
 
@@ -128,6 +129,12 @@
 </script>
 
 <script type="text/html" data-template-name="Random Signal">
+    <!--Name-->
+	<div class="form-row">
+		<label for="node-input-name"><i class="fa fa-tag"></i> <span data-i18n="random-signal.name"></span></label>
+		<input type="text" id="node-input-name">
+	</div>
+
 	<!--Signal Name-->
 	<div class="form-row">
 		<label for="node-input-signal"><i class="fa fa-signal"></i> <span data-i18n="random-signal.signal"></span></label>

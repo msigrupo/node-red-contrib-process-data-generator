@@ -3,6 +3,7 @@
         category: RED._("node-red-contrib-process-data-generator/math_calcs:category"),
         color: '#FDF0C2',
         defaults: {
+            name: {value:""},
             signal: {value:"", required: true},
             calcNum1: {value: "",validate: (RED.validators.hasOwnProperty('typedInput')?RED.validators.typedInput('calcNum1Type'):function(v) { return true})},
             calcNum1Type: { value: ""},
@@ -18,10 +19,10 @@
         icon: "font-awesome/fa-calculator",
 		peletteLabel: 'Math Calcs',
         label: function() {
-            return this.signal||"Math Calcs";
+            return this.name||"Math Calcs";
         },
         labelStyle: function() {
-            return this.signal?"node_label_italic":"";
+            return this.name?"node_label_italic":"";
         },
 		oneditprepare: function() {
             $("#node-input-calcNum1").typedInput({
@@ -46,6 +47,12 @@
 </script>
 
 <script type="text/html" data-template-name="Math Calcs">
+    <!--Name-->
+	<div class="form-row">
+		<label for="node-input-name"><i class="fa fa-tag"></i> <span data-i18n="math-calcs.name"></span></label>
+		<input type="text" id="node-input-name">
+	</div>
+
     <!--Signal-->
 	<div class="form-row">
 		<label for="node-input-signal"><i class="fa fa-signal"></i> <span data-i18n="math-calcs.signal"></span></label>

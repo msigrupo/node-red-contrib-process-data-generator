@@ -1,5 +1,6 @@
 {
     "random-variation-signal" : {
+        "name": "Name",
         "signal": "Signal",
         "defValues": "Definition values",
         "minValRandom": "Min Random",
