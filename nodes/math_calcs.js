@@ -1,4 +1,5 @@
 const signals = require('./lib/signals');
+const helpFunctions = require('./lib/helpFunctions');
 
 module.exports = function(RED) {
 
@@ -34,6 +35,7 @@ module.exports = function(RED) {
         }
 
         node.on('input', function(msg) {
+            node.inputMsg = JSON.parse(JSON.stringify(msg));
             if (msg.calcNum1 != undefined) configOptions.calcNum1 = msg.calcNum1;
             if (msg.calcNum1Type != undefined) configOptions.calcNum1Type = msg.calcNum1Type;
             if (msg.calcOpe != undefined) configOptions.calcOpe = msg.calcOpe;
@@ -110,6 +112,9 @@ module.exports = function(RED) {
 					var splitFirstLevel = splitOutput.shift();
 					let strres = RecursiveOuputSplit(signalsWithValues, splitOutput, "");
 					configOptions.input[splitFirstLevel] = JSON.parse(strres);
+
+                    //Merge input msg object with msg
+					configOptions.input = helpFunctions.mergeDeep(node.inputMsg, configOptions.input);
 
                     node.send(configOptions.input);
                     break;

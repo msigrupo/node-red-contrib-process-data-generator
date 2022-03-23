@@ -1,4 +1,5 @@
 const signals = require('./lib/signals');
+const helpFunctions = require('./lib/helpFunctions');
 
 module.exports = function(RED) {
 
@@ -126,6 +127,9 @@ module.exports = function(RED) {
 					let strres = RecursiveOuputSplit(signalsWithValues, splitOutput, "");
 					msg[splitFirstLevel] = JSON.parse(strres);
 
+					//Merge input msg object with msg
+					msg = helpFunctions.mergeDeep(node.inputMsg, msg);
+
 					node.send(msg);
                     break;
                 case "flow":
@@ -164,6 +168,7 @@ module.exports = function(RED) {
 		}
 
         node.on('input', function(msg) {
+			node.inputMsg = JSON.parse(JSON.stringify(msg));
 			var possibleColors = ["red","green","yellow","blue","grey"];
 			
 			if (msg.options != undefined) options = msg.options;

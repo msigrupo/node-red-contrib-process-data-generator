@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const signals = require('./lib/signals');
+const helpFunctions = require('./lib/helpFunctions');
 
 module.exports = function(RED) {
 
@@ -142,6 +143,9 @@ module.exports = function(RED) {
 					var splitFirstLevel = splitOutput.shift();
 					let strres = RecursiveOuputSplit(signalsWithValues, splitOutput, "");
 					msg[splitFirstLevel] = JSON.parse(strres);
+					
+					//Merge input msg object with msg
+					msg = helpFunctions.mergeDeep(node.inputMsg, msg);
 
 					NodeSend(msg);
 				})
@@ -262,6 +266,7 @@ module.exports = function(RED) {
         }
 
         node.on('input', function(msg) {
+			node.inputMsg = JSON.parse(JSON.stringify(msg));
 			if (msg.filename != undefined) configOptions.filename = msg.filename;
 			if (msg.encoding != undefined) configOptions.encoding = msg.encoding;
 			if (msg.separator != undefined) configOptions.separator = msg.separator;
