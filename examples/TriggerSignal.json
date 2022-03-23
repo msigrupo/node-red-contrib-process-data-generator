@@ -1,0 +1,121 @@
+[
+    {
+        "id": "7d99848c8b1a2236",
+        "type": "tab",
+        "label": "Trigger Signal",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "018e52594a00f1a8",
+        "type": "debug",
+        "z": "7d99848c8b1a2236",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 510,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "b043d030b6b16d80",
+        "type": "function",
+        "z": "7d99848c8b1a2236",
+        "name": "",
+        "func": "global.set(\"POT_GLOBAL\", 5);\nflow.set(\"POT_FLOW\", 7);\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 300,
+        "y": 100,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "6ac6a40b4521d9de",
+        "type": "Signal Noise",
+        "z": "7d99848c8b1a2236",
+        "name": "",
+        "signals": [
+            {
+                "noise": "0.05",
+                "decimals": "2",
+                "signal": "POT_FLOW",
+                "signalType": "flow",
+                "outputSignal": "Signal4"
+            },
+            {
+                "noise": "0.05",
+                "decimals": "2",
+                "signal": "POT_GLOBAL",
+                "signalType": "global",
+                "outputSignal": "Signal5"
+            }
+        ],
+        "x": 310,
+        "y": 60,
+        "wires": [
+            [
+                "018e52594a00f1a8"
+            ]
+        ]
+    },
+    {
+        "id": "2d98c2bb9954fe69",
+        "type": "Trigger Signal",
+        "z": "7d99848c8b1a2236",
+        "name": "",
+        "signal": "Signal4",
+        "color": "grey",
+        "x": 200,
+        "y": 160,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "8111f1e434dfefed",
+        "type": "Trigger Signal",
+        "z": "7d99848c8b1a2236",
+        "name": "",
+        "signal": "Signal5",
+        "color": "grey",
+        "x": 380,
+        "y": 160,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "cc36f899dbb2782f",
+        "type": "Process Simulator",
+        "z": "7d99848c8b1a2236",
+        "name": "",
+        "dataType": "realtime",
+        "startDate": "2022-03-22T12:39",
+        "limit": "iteration",
+        "iteration": 5,
+        "endDate": "",
+        "interval": "3",
+        "intervalUnit": "1000",
+        "runAtStart": true,
+        "color": "grey",
+        "x": 110,
+        "y": 80,
+        "wires": [
+            [
+                "6ac6a40b4521d9de",
+                "b043d030b6b16d80"
+            ]
+        ]
+    }
+]

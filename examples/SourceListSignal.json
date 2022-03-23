@@ -1,0 +1,106 @@
+[
+    {
+        "id": "7d99848c8b1a2236",
+        "type": "tab",
+        "label": "Source List Signal",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "c39df74926d82f4f",
+        "type": "Process Simulator",
+        "z": "7d99848c8b1a2236",
+        "name": "",
+        "dataType": "realtime",
+        "startDate": "2022-03-22T11:56",
+        "limit": "iteration",
+        "iteration": 5,
+        "endDate": "",
+        "interval": "3",
+        "intervalUnit": "1000",
+        "runAtStart": true,
+        "color": "grey",
+        "x": 130,
+        "y": 60,
+        "wires": [
+            [
+                "8ec21b0a4fb992cc"
+            ]
+        ]
+    },
+    {
+        "id": "1ba9db1ed0282851",
+        "type": "function",
+        "z": "7d99848c8b1a2236",
+        "name": "",
+        "func": "const arr = [[1, 2], [3, 4], [5, 6], [7, 8], [9, 10], [11, 12], [13, 14], [15, 16], [17, 18], [19, 20], [21, 22], [23, 24], [25, 26], [27, 28], [29, 30]];\n\n\nreturn {\n    data: arr.slice(msg.payload.index, msg.payload.pagination + msg.payload.index), \n    count: 15\n};",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 340,
+        "y": 200,
+        "wires": [
+            [
+                "8ec21b0a4fb992cc"
+            ]
+        ]
+    },
+    {
+        "id": "018e52594a00f1a8",
+        "type": "debug",
+        "z": "7d99848c8b1a2236",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 570,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "8ec21b0a4fb992cc",
+        "type": "Source List Signal",
+        "z": "7d99848c8b1a2236",
+        "name": "",
+        "fileReading": "sequential",
+        "inputData": "data",
+        "inputDataType": "msg",
+        "inputDataCount": "count",
+        "inputDataCountType": "msg",
+        "pagination": "3",
+        "x": 370,
+        "y": 60,
+        "wires": [
+            [
+                "018e52594a00f1a8"
+            ],
+            [
+                "6c28a678ed647967",
+                "1ba9db1ed0282851"
+            ]
+        ]
+    },
+    {
+        "id": "6c28a678ed647967",
+        "type": "debug",
+        "z": "7d99848c8b1a2236",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 570,
+        "y": 80,
+        "wires": []
+    }
+]

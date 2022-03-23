@@ -1,6 +1,6 @@
 <script type="text/javascript">
     RED.nodes.registerType('Signal Noise',{
-        category: RED._("node-red-contrib-process-data-generator/signal_noise:category"),
+        category: RED._("@msigrupo-develop/node-red-contrib-process-data-generator/signal_noise:category"),
         color: '#FDF0C2',
         defaults: {
             name: {value:""},
@@ -25,10 +25,10 @@
 
                 $('<i style="color:#eee; cursor:move; margin-left:3px;" class="node-input-table-handle fa fa-bars"></i>').appendTo(row);
 
-                var signalField = $('<input/>',{class:"node-input-table-signal",type:"text",style:"margin-left:7px; width:calc(30% - 32px);", placeholder: RED._("node-red-contrib-process-data-generator/signal_noise:signal-noise.name"),value:signal.signal}).appendTo(row).typedInput({default:signal.signalType||'msg',types:['msg','flow','global']});
-				var noiseField = $('<input/>',{class:"node-input-table-noise",type:"number",step:"0.01",style:"margin-left:7px; width:calc(20% - 32px);", placeholder: RED._("node-red-contrib-process-data-generator/signal_noise:signal-noise.noise"), value:signal.noise}).appendTo(row);
-                var decimalField = $('<input/>',{class:"node-input-table-decimals",type:"number",style:"margin-left:7px; width:calc(20% - 32px);", placeholder: RED._("node-red-contrib-process-data-generator/signal_noise:signal-noise.decimals"), value:signal.decimals}).appendTo(row);
-                var outputSignalField = $('<input/>',{class:"node-input-table-outputSignal",type:"text",style:"margin-left:7px; width:calc(30% - 32px);", placeholder: RED._("node-red-contrib-process-data-generator/signal_noise:signal-noise.outputSignal"), value:signal.outputSignal}).appendTo(row);
+                var signalField = $('<input/>',{class:"node-input-table-signal",type:"text",style:"margin-left:7px; width:calc(30% - 32px);", placeholder: RED._("@msigrupo-develop/node-red-contrib-process-data-generator/signal_noise:signal-noise.name"),value:signal.signal}).appendTo(row).typedInput({default:signal.signalType||'msg',types:['msg','flow','global']});
+				var noiseField = $('<input/>',{class:"node-input-table-noise",type:"number",step:"0.01",style:"margin-left:7px; width:calc(20% - 32px);", placeholder: RED._("@msigrupo-develop/node-red-contrib-process-data-generator/signal_noise:signal-noise.noise"), value:signal.noise}).appendTo(row);
+                var decimalField = $('<input/>',{class:"node-input-table-decimals",type:"number",style:"margin-left:7px; width:calc(20% - 32px);", placeholder: RED._("@msigrupo-develop/node-red-contrib-process-data-generator/signal_noise:signal-noise.decimals"), value:signal.decimals}).appendTo(row);
+                var outputSignalField = $('<input/>',{class:"node-input-table-outputSignal",type:"text",style:"margin-left:7px; width:calc(30% - 32px);", placeholder: RED._("@msigrupo-develop/node-red-contrib-process-data-generator/signal_noise:signal-noise.outputSignal"), value:signal.outputSignal}).appendTo(row);
 
                 var finalspan = $('<span/>',{style:"float:right; margin-right:8px;"}).appendTo(row);
                 var deleteButton = $('<a/>',{href:"#",class:"editor-button editor-button-small", style:"margin-top:7px; margin-left:5px;"}).appendTo(finalspan);

@@ -1,0 +1,70 @@
+[
+    {
+        "id": "7d99848c8b1a2236",
+        "type": "tab",
+        "label": "Math Calcs",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "c39df74926d82f4f",
+        "type": "Process Simulator",
+        "z": "7d99848c8b1a2236",
+        "name": "",
+        "dataType": "historical",
+        "startDate": "2022-03-22T11:56",
+        "limit": "iteration",
+        "iteration": "1",
+        "endDate": "",
+        "interval": "3",
+        "intervalUnit": "1000",
+        "runAtStart": true,
+        "color": "grey",
+        "x": 130,
+        "y": 60,
+        "wires": [
+            [
+                "01475c2e9d0eaf12"
+            ]
+        ]
+    },
+    {
+        "id": "018e52594a00f1a8",
+        "type": "debug",
+        "z": "7d99848c8b1a2236",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 590,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "01475c2e9d0eaf12",
+        "type": "Math Calcs",
+        "z": "7d99848c8b1a2236",
+        "name": "",
+        "signal": "Signal3",
+        "calcNum1": "2",
+        "calcNum1Type": "num",
+        "calcOpe": "+",
+        "calcNum2": "4",
+        "calcNum2Type": "num",
+        "output": "payload",
+        "outputType": "msg",
+        "color": "grey",
+        "x": 350,
+        "y": 60,
+        "wires": [
+            [
+                "018e52594a00f1a8"
+            ]
+        ]
+    }
+]

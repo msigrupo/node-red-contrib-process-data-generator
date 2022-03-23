@@ -1,0 +1,109 @@
+[
+    {
+        "id": "7d99848c8b1a2236",
+        "type": "tab",
+        "label": "OPC UA",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "018e52594a00f1a8",
+        "type": "debug",
+        "z": "7d99848c8b1a2236",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 510,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "b043d030b6b16d80",
+        "type": "function",
+        "z": "7d99848c8b1a2236",
+        "name": "",
+        "func": "global.set(\"POT_GLOBAL\", 5);\nflow.set(\"POT_FLOW\", 7);\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 300,
+        "y": 100,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "6ac6a40b4521d9de",
+        "type": "Signal Noise",
+        "z": "7d99848c8b1a2236",
+        "name": "",
+        "signals": [
+            {
+                "noise": "0.05",
+                "decimals": "2",
+                "signal": "POT_FLOW",
+                "signalType": "flow",
+                "outputSignal": "Signal4"
+            },
+            {
+                "noise": "0.05",
+                "decimals": "2",
+                "signal": "POT_GLOBAL",
+                "signalType": "global",
+                "outputSignal": "Signal5"
+            }
+        ],
+        "x": 310,
+        "y": 60,
+        "wires": [
+            [
+                "018e52594a00f1a8"
+            ]
+        ]
+    },
+    {
+        "id": "cc36f899dbb2782f",
+        "type": "Process Simulator",
+        "z": "7d99848c8b1a2236",
+        "name": "",
+        "dataType": "realtime",
+        "startDate": "2022-03-22T12:39",
+        "limit": "iteration",
+        "iteration": 5,
+        "endDate": "",
+        "interval": "3",
+        "intervalUnit": "1000",
+        "runAtStart": true,
+        "color": "grey",
+        "x": 110,
+        "y": 80,
+        "wires": [
+            [
+                "6ac6a40b4521d9de",
+                "b043d030b6b16d80"
+            ]
+        ]
+    },
+    {
+        "id": "bbbcd491830e29a3",
+        "type": "OPC UA",
+        "z": "7d99848c8b1a2236",
+        "name": "",
+        "port": "4334",
+        "resourcePath": "UA/TestServer",
+        "browseName": "Signals",
+        "x": 180,
+        "y": 160,
+        "wires": [
+            []
+        ]
+    }
+]

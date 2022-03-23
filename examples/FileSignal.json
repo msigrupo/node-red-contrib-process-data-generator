@@ -1,0 +1,85 @@
+[
+    {
+        "id": "7d99848c8b1a2236",
+        "type": "tab",
+        "label": "File Signal",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "c39df74926d82f4f",
+        "type": "Process Simulator",
+        "z": "7d99848c8b1a2236",
+        "name": "",
+        "dataType": "realtime",
+        "startDate": "2022-03-22T11:56",
+        "limit": "iteration",
+        "iteration": 5,
+        "endDate": "",
+        "interval": "3",
+        "intervalUnit": "1000",
+        "runAtStart": true,
+        "color": "grey",
+        "x": 130,
+        "y": 40,
+        "wires": [
+            [
+                "2bc8a6f440b91c0a"
+            ]
+        ]
+    },
+    {
+        "id": "2bc8a6f440b91c0a",
+        "type": "File Signal",
+        "z": "7d99848c8b1a2236",
+        "name": "",
+        "filename": "files/testFile.csv",
+        "encoding": "utf8",
+        "separator": ",",
+        "otherSeparator": "",
+        "firstLineData": "2",
+        "typeOfSignals": "concrete",
+        "variables": [
+            {
+                "column": "0",
+                "variable": "name",
+                "varType": "str"
+            },
+            {
+                "column": "1",
+                "variable": "last_name",
+                "varType": "str"
+            }
+        ],
+        "headerRow": 1,
+        "startColumn": 1,
+        "fileReading": "sequential",
+        "output": "payload",
+        "outputType": "msg",
+        "x": 360,
+        "y": 40,
+        "wires": [
+            [
+                "2934296f441bf47c"
+            ]
+        ]
+    },
+    {
+        "id": "2934296f441bf47c",
+        "type": "debug",
+        "z": "7d99848c8b1a2236",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 600,
+        "y": 40,
+        "wires": []
+    }
+]

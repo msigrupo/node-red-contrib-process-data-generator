@@ -1,0 +1,110 @@
+[
+    {
+        "id": "7d99848c8b1a2236",
+        "type": "tab",
+        "label": "Signal Noise",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "018e52594a00f1a8",
+        "type": "debug",
+        "z": "7d99848c8b1a2236",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 510,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "b043d030b6b16d80",
+        "type": "function",
+        "z": "7d99848c8b1a2236",
+        "name": "",
+        "func": "global.set(\"POT_GLOBAL\", 5);\nflow.set(\"POT_FLOW\", 7);\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 300,
+        "y": 100,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "fdd91106a575a81d",
+        "type": "inject",
+        "z": "7d99848c8b1a2236",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "prueba",
+                "v": "2.6",
+                "vt": "num"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 140,
+        "y": 80,
+        "wires": [
+            [
+                "b043d030b6b16d80",
+                "6ac6a40b4521d9de"
+            ]
+        ]
+    },
+    {
+        "id": "6ac6a40b4521d9de",
+        "type": "Signal Noise",
+        "z": "7d99848c8b1a2236",
+        "name": "",
+        "signals": [
+            {
+                "noise": "0.05",
+                "decimals": "2",
+                "signal": "POT_FLOW",
+                "signalType": "flow",
+                "outputSignal": "Signal4"
+            },
+            {
+                "noise": "0.05",
+                "decimals": "2",
+                "signal": "POT_GLOBAL",
+                "signalType": "global",
+                "outputSignal": "Signal5"
+            },
+            {
+                "noise": "0.02",
+                "decimals": "3",
+                "signal": "prueba",
+                "signalType": "msg",
+                "outputSignal": "Signal6"
+            }
+        ],
+        "x": 310,
+        "y": 60,
+        "wires": [
+            [
+                "018e52594a00f1a8"
+            ]
+        ]
+    }
+]

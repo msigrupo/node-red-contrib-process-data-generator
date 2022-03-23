@@ -1,6 +1,6 @@
 <script type="text/javascript">
     RED.nodes.registerType('File Signal',{
-        category: RED._("node-red-contrib-process-data-generator/file_signal:category"),
+        category: RED._("@msigrupo-develop/node-red-contrib-process-data-generator/file_signal:category"),
         color: '#DEB887',
         defaults: {
             name: {value:""},
@@ -65,8 +65,8 @@
 
                 $('<i style="color:#eee; cursor:move; margin-left:3px;" class="node-input-varTable-handle fa fa-bars"></i>').appendTo(row);
 
-                var varField = $('<input/>',{class:"node-input-varTable-variable",type:"text",style:"margin-left:7px; width:calc(50% - 32px);", placeholder: RED._("node-red-contrib-process-data-generator/file_signal:file-signal.signal"),value:variable.variable}).appendTo(row).typedInput({default:variable.varType||'str',types:['str','num','bool','msg','flow','global']});
-				var columnField = $('<input/>',{class:"node-input-varTable-column",type:"number",style:"margin-left:7px; width:calc(50% - 32px);", placeholder: RED._("node-red-contrib-process-data-generator/file_signal:file-signal.column"), value:variable.column}).appendTo(row);
+                var varField = $('<input/>',{class:"node-input-varTable-variable",type:"text",style:"margin-left:7px; width:calc(50% - 32px);", placeholder: RED._("@msigrupo-develop/node-red-contrib-process-data-generator/file_signal:file-signal.signal"),value:variable.variable}).appendTo(row).typedInput({default:variable.varType||'str',types:['str','num','bool','msg','flow','global']});
+				var columnField = $('<input/>',{class:"node-input-varTable-column",type:"number",style:"margin-left:7px; width:calc(50% - 32px);", placeholder: RED._("@msigrupo-develop/node-red-contrib-process-data-generator/file_signal:file-signal.column"), value:variable.column}).appendTo(row);
 
                 var finalspan = $('<span/>',{style:"float:right; margin-right:8px;"}).appendTo(row);
                 var deleteButton = $('<a/>',{href:"#",class:"editor-button editor-button-small", style:"margin-top:7px; margin-left:5px;"}).appendTo(finalspan);

@@ -1,0 +1,30 @@
+[
+    {
+        "id": "7d99848c8b1a2236",
+        "type": "tab",
+        "label": "Process Simulator",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "c39df74926d82f4f",
+        "type": "Process Simulator",
+        "z": "7d99848c8b1a2236",
+        "name": "",
+        "dataType": "realtime",
+        "startDate": "2022-03-22T11:56",
+        "limit": "iteration",
+        "iteration": 5,
+        "endDate": "",
+        "interval": "5",
+        "intervalUnit": "1000",
+        "runAtStart": true,
+        "color": "grey",
+        "x": 130,
+        "y": 40,
+        "wires": [
+            []
+        ]
+    }
+]

@@ -1,6 +1,6 @@
 <script type="text/javascript">
     RED.nodes.registerType('Random Variation Signal',{
-        category: RED._("node-red-contrib-process-data-generator/random_variation_signal:category"),
+        category: RED._("@msigrupo-develop/node-red-contrib-process-data-generator/random_variation_signal:category"),
         color: '#C7E9C0',
         defaults: {
             name: {value:""},
@@ -81,20 +81,20 @@
                     newAttrMinLang = attrMinLang + jsonLang + "minValRandom";
                     newAttrMaxLang = attrMaxLang + jsonLang + "maxValRandom";
 
-                    minJsonText = RED._("node-red-contrib-process-data-generator/random_variation_signal"+jsonLang+"minValRandom");
-                    maxJsonText = RED._("node-red-contrib-process-data-generator/random_variation_signal"+jsonLang+"maxValRandom");
+                    minJsonText = RED._("@msigrupo-develop/node-red-contrib-process-data-generator/random_variation_signal"+jsonLang+"minValRandom");
+                    maxJsonText = RED._("@msigrupo-develop/node-red-contrib-process-data-generator/random_variation_signal"+jsonLang+"maxValRandom");
                 } else if (inc) {
                     newAttrMinLang = attrMinLang + jsonLang + "minValRandomInc";
                     newAttrMaxLang = attrMaxLang + jsonLang + "maxValRandomInc";
 
-                    minJsonText = RED._("node-red-contrib-process-data-generator/random_variation_signal"+jsonLang+"minValRandomInc");
-                    maxJsonText = RED._("node-red-contrib-process-data-generator/random_variation_signal"+jsonLang+"maxValRandomInc");
+                    minJsonText = RED._("@msigrupo-develop/node-red-contrib-process-data-generator/random_variation_signal"+jsonLang+"minValRandomInc");
+                    maxJsonText = RED._("@msigrupo-develop/node-red-contrib-process-data-generator/random_variation_signal"+jsonLang+"maxValRandomInc");
                 } else if (dec) {
                     newAttrMinLang = attrMinLang + jsonLang + "minValRandomDec";
                     newAttrMaxLang = attrMaxLang + jsonLang + "maxValRandomDec";
 
-                    minJsonText = RED._("node-red-contrib-process-data-generator/random_variation_signal"+jsonLang+"minValRandomDec");
-                    maxJsonText = RED._("node-red-contrib-process-data-generator/random_variation_signal"+jsonLang+"maxValRandomDec");
+                    minJsonText = RED._("@msigrupo-develop/node-red-contrib-process-data-generator/random_variation_signal"+jsonLang+"minValRandomDec");
+                    maxJsonText = RED._("@msigrupo-develop/node-red-contrib-process-data-generator/random_variation_signal"+jsonLang+"maxValRandomDec");
                 }
 
                 $(".variation_maxValRandom").attr('data-i18n', newAttrMaxLang);

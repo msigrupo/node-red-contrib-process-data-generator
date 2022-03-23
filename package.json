@@ -1,10 +1,20 @@
 {
-    "name": "node-red-contrib-process-data-generator",
-    "version": "0.0.1",
+    "name": "@msigrupo-develop/node-red-contrib-process-data-generator",
+    "version": "1.0.0",
     "description": "Process data generator",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/msigrupo/node-red-contrib-process-data-generator.git"
+    },
+    "bugs": {
+        "url": "https://github.com/msigrupo/node-red-contrib-process-data-generator/issues"
+    },
     "author": {
         "name": "MSI"
     },
+    "keywords": [
+        "node-red"
+    ],
     "license": "MIT",
     "node-red": {
         "version": ">=2.0.0",
@@ -19,6 +29,9 @@
             "trigger_signal": "nodes/trigger_signal.js",
             "opcua": "nodes/opcua.js"
         }
+    },
+    "engines": {
+        "node": ">=12.0.0"
     },
     "dependencies": {
         "fast-csv": "^4.3.6",

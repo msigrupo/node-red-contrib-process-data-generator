@@ -1,0 +1,85 @@
+[
+    {
+        "id": "7d99848c8b1a2236",
+        "type": "tab",
+        "label": "Random Signal",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "c39df74926d82f4f",
+        "type": "Process Simulator",
+        "z": "7d99848c8b1a2236",
+        "name": "",
+        "dataType": "realtime",
+        "startDate": "2022-03-22T11:56",
+        "limit": "iteration",
+        "iteration": 5,
+        "endDate": "",
+        "interval": "3",
+        "intervalUnit": "1000",
+        "runAtStart": true,
+        "color": "grey",
+        "x": 130,
+        "y": 60,
+        "wires": [
+            [
+                "01ceaa88ced3d4dc"
+            ]
+        ]
+    },
+    {
+        "id": "018e52594a00f1a8",
+        "type": "debug",
+        "z": "7d99848c8b1a2236",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 590,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "01ceaa88ced3d4dc",
+        "type": "Random Signal",
+        "z": "7d99848c8b1a2236",
+        "name": "",
+        "signal": "Signal1",
+        "options": [
+            {
+                "weight": "1",
+                "typeWeight": "num",
+                "value": "val1",
+                "typeValue": "str"
+            },
+            {
+                "weight": "2",
+                "typeWeight": "num",
+                "value": "val2",
+                "typeValue": "str"
+            },
+            {
+                "weight": "1",
+                "typeWeight": "num",
+                "value": "val3",
+                "typeValue": "str"
+            }
+        ],
+        "color": "grey",
+        "output": "payload.Signal1",
+        "outputType": "msg",
+        "x": 360,
+        "y": 60,
+        "wires": [
+            [
+                "018e52594a00f1a8"
+            ]
+        ]
+    }
+]

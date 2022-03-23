@@ -1,0 +1,383 @@
+[
+    {
+        "id": "674724e458601bc6",
+        "type": "tab",
+        "label": "Process Data Generator",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "bec0a7ee841ecbb4",
+        "type": "Process Simulator",
+        "z": "674724e458601bc6",
+        "name": "",
+        "dataType": "historical",
+        "startDate": "2022-03-22T13:05",
+        "limit": "iteration",
+        "iteration": "1",
+        "endDate": "",
+        "interval": "3",
+        "intervalUnit": "1000",
+        "runAtStart": false,
+        "color": "grey",
+        "x": 290,
+        "y": 60,
+        "wires": [
+            [
+                "1b5419e45af7a9b2"
+            ]
+        ]
+    },
+    {
+        "id": "1b5419e45af7a9b2",
+        "type": "File Signal",
+        "z": "674724e458601bc6",
+        "name": "",
+        "filename": "files/testFIle.csv",
+        "encoding": "utf8",
+        "separator": ",",
+        "otherSeparator": "",
+        "firstLineData": "2",
+        "typeOfSignals": "header",
+        "variables": [
+            {
+                "column": "",
+                "variable": "",
+                "varType": "str"
+            }
+        ],
+        "headerRow": 1,
+        "startColumn": 1,
+        "fileReading": "sequential",
+        "output": "payload",
+        "outputType": "msg",
+        "x": 470,
+        "y": 120,
+        "wires": [
+            [
+                "5af27891b0fb5457"
+            ]
+        ]
+    },
+    {
+        "id": "6e2c5d2c449a2775",
+        "type": "debug",
+        "z": "674724e458601bc6",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 510,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "5af27891b0fb5457",
+        "type": "Random Signal",
+        "z": "674724e458601bc6",
+        "name": "signal1",
+        "signal": "signal1",
+        "options": [
+            {
+                "weight": "1",
+                "typeWeight": "num",
+                "value": "val1",
+                "typeValue": "str"
+            },
+            {
+                "weight": "1",
+                "typeWeight": "num",
+                "value": "val2",
+                "typeValue": "str"
+            }
+        ],
+        "color": "grey",
+        "output": "payload",
+        "outputType": "msg",
+        "x": 640,
+        "y": 120,
+        "wires": [
+            [
+                "903823fbee08edd7"
+            ]
+        ]
+    },
+    {
+        "id": "3c528d95018bf2cc",
+        "type": "inject",
+        "z": "674724e458601bc6",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 100,
+        "y": 180,
+        "wires": [
+            [
+                "bec0a7ee841ecbb4",
+                "d77891050ec64510"
+            ]
+        ]
+    },
+    {
+        "id": "903823fbee08edd7",
+        "type": "File Signal",
+        "z": "674724e458601bc6",
+        "name": "firstName",
+        "filename": "files/testFIle.csv",
+        "encoding": "utf8",
+        "separator": ",",
+        "otherSeparator": "",
+        "firstLineData": "2",
+        "typeOfSignals": "concrete",
+        "variables": [
+            {
+                "column": "0",
+                "variable": "firstName",
+                "varType": "str"
+            }
+        ],
+        "headerRow": 1,
+        "startColumn": 1,
+        "fileReading": "sequential",
+        "output": "payload",
+        "outputType": "msg",
+        "x": 800,
+        "y": 120,
+        "wires": [
+            [
+                "4987e465a4ffccbf"
+            ]
+        ]
+    },
+    {
+        "id": "a4e630e2b6a382ab",
+        "type": "function",
+        "z": "674724e458601bc6",
+        "name": "",
+        "func": "const arr = [[1, 2], [3, 4], [5, 6], [7, 8], [9, 10], [11, 12], [13, 14], [15, 16], [17, 18], [19, 20], [21, 22], [23, 24], [25, 26], [27, 28], [29, 30]];\n\n\nreturn {\n    data: arr.slice(msg.payload.index, msg.payload.pagination + msg.payload.index), \n    count: 15\n};",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 300,
+        "y": 280,
+        "wires": [
+            [
+                "d77891050ec64510"
+            ]
+        ]
+    },
+    {
+        "id": "d77891050ec64510",
+        "type": "Source List Signal",
+        "z": "674724e458601bc6",
+        "name": "",
+        "fileReading": "sequential",
+        "inputData": "data",
+        "inputDataType": "msg",
+        "inputDataCount": "count",
+        "inputDataCountType": "msg",
+        "pagination": "3",
+        "x": 290,
+        "y": 380,
+        "wires": [
+            [
+                "6e2c5d2c449a2775"
+            ],
+            [
+                "c94b45f0c36b6740",
+                "a4e630e2b6a382ab"
+            ]
+        ]
+    },
+    {
+        "id": "c94b45f0c36b6740",
+        "type": "debug",
+        "z": "674724e458601bc6",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 510,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "4987e465a4ffccbf",
+        "type": "Random Variation Signal",
+        "z": "674724e458601bc6",
+        "name": "signal2",
+        "signal": "signal2",
+        "minValRandom": 0,
+        "maxValRandom": "0.25",
+        "minValSignal": "-10",
+        "maxValSignal": "10",
+        "decimals": "2",
+        "increase": true,
+        "decrease": true,
+        "x": 960,
+        "y": 120,
+        "wires": [
+            [
+                "02885c154fd50801"
+            ]
+        ]
+    },
+    {
+        "id": "02885c154fd50801",
+        "type": "Math Calcs",
+        "z": "674724e458601bc6",
+        "name": "signal3",
+        "signal": "signal3",
+        "calcNum1": "payload.signal2",
+        "calcNum1Type": "msg",
+        "calcOpe": "+",
+        "calcNum2": "2",
+        "calcNum2Type": "num",
+        "output": "payload",
+        "outputType": "msg",
+        "color": "grey",
+        "x": 560,
+        "y": 200,
+        "wires": [
+            [
+                "cd5f74acfce08591"
+            ]
+        ]
+    },
+    {
+        "id": "cd5f74acfce08591",
+        "type": "Signal Noise",
+        "z": "674724e458601bc6",
+        "name": "signal4",
+        "signals": [
+            {
+                "noise": "0.2",
+                "decimals": "1",
+                "signal": "payload.signal3",
+                "signalType": "msg",
+                "outputSignal": "signal4"
+            }
+        ],
+        "x": 720,
+        "y": 200,
+        "wires": [
+            [
+                "5b9a0f823f30322c"
+            ]
+        ]
+    },
+    {
+        "id": "463bf763d144fee9",
+        "type": "Trigger Signal",
+        "z": "674724e458601bc6",
+        "name": "Trigger signal5",
+        "signal": "signal5",
+        "color": "grey",
+        "x": 980,
+        "y": 260,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "9d2e4ba33b05c8df",
+        "type": "Trigger Signal",
+        "z": "674724e458601bc6",
+        "name": "Trigger signal2",
+        "signal": "signal2",
+        "color": "grey",
+        "x": 780,
+        "y": 260,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "5b9a0f823f30322c",
+        "type": "Random Signal",
+        "z": "674724e458601bc6",
+        "name": "signal5",
+        "signal": "signal5",
+        "options": [
+            {
+                "weight": "1",
+                "typeWeight": "num",
+                "value": 5,
+                "typeValue": "num"
+            },
+            {
+                "weight": "1",
+                "typeWeight": "num",
+                "value": 6,
+                "typeValue": "num"
+            }
+        ],
+        "color": "grey",
+        "output": "payload",
+        "outputType": "msg",
+        "x": 880,
+        "y": 200,
+        "wires": [
+            [
+                "21946346970d28c1"
+            ]
+        ]
+    },
+    {
+        "id": "21946346970d28c1",
+        "type": "debug",
+        "z": "674724e458601bc6",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1070,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "71cb870577bba8a5",
+        "type": "OPC UA",
+        "z": "674724e458601bc6",
+        "name": "",
+        "port": "4334",
+        "resourcePath": "UA/TestServer",
+        "browseName": "Signals",
+        "x": 320,
+        "y": 180,
+        "wires": [
+            []
+        ]
+    }
+]
